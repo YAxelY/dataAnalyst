@@ -11,8 +11,14 @@ on windows:
  1. pull the project from the branch develop  using `git pull origin develop`
  2. run `venv\Scripts\activate` from within the project root directory to activate the virtual environment
 
+ on linux:
+  1. one might create  a virtual environment for linux named "vendataL" using `python3 -m venv vendataL` fron within the run directory of the project
+  2.  run `source venv/bin/activate` from within the project root directory to activate the virtual envrironment
+
 What I'm doing:
 
 - implementing the MannWhitney test and of course providing testvalues for that test.
+
+
  
 
