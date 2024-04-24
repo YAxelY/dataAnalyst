@@ -20,5 +20,12 @@ What I'm doing:
 - implementing the MannWhitney test and of course providing testvalues for that test.
 
 
+24/04/2024 04:26
+
+what I've done:
+- created a virtual environment for linux users maned "vendataL" using `python3 -m venv vendataL`
+
+
+
  
 
