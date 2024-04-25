@@ -1,7 +1,7 @@
 from scipy import stats
 
 # Exemple de données pour deux groupes
-groupe1 = [23, 25, 28, 30, 32]
+groupe1 = [23, 25, 28, 30, 54]
 groupe2 = [20, 22, 25, 27, 29]
 
 # Effectuer le test de Student (t-test) pour des échantillons indépendants
