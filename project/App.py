@@ -20,32 +20,9 @@ class DataAnalysisApp(tk.Tk):
         menubar.add_cascade(label="Fichier", menu=file_menu)
         self.config(menu=menubar)
 
-        # Label pour le titre avec fond bleu
-        title_frame = tk.Frame(self, bg="blue", height=50)
-        title_frame.pack(fill=tk.X)
-        title_label = tk.Label(title_frame, text="Data Analysis", font=("Helvetica", 20),bg='blue')
-        title_label.pack(pady=10)
+       
 
-        # Sélection du type de test et du nom du test d'hypothèse sur la même ligne
-        navigation_frame = tk.Frame(self, bg="lightcoral")  # Fond rouge clair
-        navigation_frame.pack(fill=tk.X)
-
-        test_type_label = tk.Label(navigation_frame, text="Type de Test:")
-        test_type_label.grid(row=0, column=0, padx=10, pady=5)
-
-        test_type_var = tk.StringVar(self)
-        test_type_dropdown = tk.OptionMenu(navigation_frame, test_type_var, "Test t de Student", "Test de Wilcoxon", "Test de Chi-carré")
-        test_type_dropdown.config(bg="light pink")  # Fond rouge clair
-        test_type_dropdown.grid(row=0, column=1, padx=10, pady=5)
-
-        hypothesis_test_label = tk.Label(navigation_frame, text="Nom du Test d'Hypothèse:")
-        hypothesis_test_label.grid(row=0, column=2, padx=10, pady=5)
-
-        hypothesis_test_var = tk.StringVar(self)
-        hypothesis_test_dropdown = tk.OptionMenu(navigation_frame, hypothesis_test_var, "Test d'Hypothèse 1", "Test d'Hypothèse 2", "Test d'Hypothèse 3")
-        hypothesis_test_dropdown.config(bg="light pink")  # Fond rouge clair
-        hypothesis_test_dropdown.grid(row=0, column=3, padx=10, pady=5)
-
+     
     def open_file(self):
         file_path = filedialog.askopenfilename()
         if file_path:
