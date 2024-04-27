@@ -3,21 +3,31 @@ from scipy.stats import mannwhitneyu
 class AnovaOne:
     def __init__(self, dataSet,mode="two sided"):
         self.dataSet = dataSet
+        n = len(dataSet)
+
         
-    
+    #commun interfaces
     def formHyp(self):
 
-        n=len(dataSet)
+        n=len(self.dataSet)
+        symbol = "θ²"
+        hypothesis_string = "H0: "
+        for i in range(1, n+ 1):
+            if i > 1:
+                hypothesis_string += "="
+            hypothesis_string += symbol + "_{}".format(i)
+
+      
 
 
         
         
-        return "H_0: U_1 = U_2 \n H_1: Au moins une variance diffère des autres"
+        return hypothesis_string+ "\nH_1: Au moins une moyenne diffère des autres"
     
     def distribution(self):
-        # Add your Mann-Whitney U test p-value calculation here
+        
 
-       pass
+       print("on utise la loi de Fisher au ddl")
     
 
     def testval(self):
@@ -54,6 +64,13 @@ class AnovaOne:
             print("Reject the null hypothesis")
         else:
             print("Fail to reject the null hypothesis")
+    
+    #personnal function
+    def N(self):
+        N=0
+        for i in self.dataSet:
+            N+=len(i)
+                       
 
     
 
