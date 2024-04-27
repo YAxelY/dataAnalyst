@@ -1,4 +1,4 @@
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu # type: ignore
 
 class MannWhitne:
     def __init__(self, data1, data2,type="one-way"):

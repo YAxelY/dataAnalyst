@@ -1,4 +1,4 @@
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu # type: ignore
 
 class AnovaOne:
     def __init__(self, dataSet,mode="two sided"):
