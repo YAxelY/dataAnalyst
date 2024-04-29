@@ -1,9 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+from prettytable import PrettyTable
 
 import Style as st 
 from communfunctions import gui_items as gui
+from communfunctions import converter as ct
+from tests.MannWhitney import MannWhitney
+from tests.kruskal import Kruskal
 
 
 # template
@@ -23,16 +27,26 @@ class DataAnalysisApp:
         self.master.minsize(500, 500)  # Set minimum width and height
         self.master.config(bg="white", bd=2, relief="groove", width=1200, height=700)
         self.master.title("Data Analysis")
+       
+        self.testTables=[]
         # end main windows
+
+        # explicit attributes
+        self.alpha=0.05
+        self.data=[]
+        self.selectedTest=" "
+        self.selectedNature=" "
+        self.validation = self.master.register(gui.validate_input)
+       
 
 
         self.create_widgets(self.master)
     
     def create_widgets(self,master):
         # main menu bar
-        menubar = tk.Menu(master) 
+        self.menubar = tk.Menu(master) 
         #can't pack Menu widget is top-level-windows
-        menubar.config(bg="lightblue",bd=2,relief="groove")
+        self.menubar.config(bg="white",bd=2,relief="groove")
         #can't resize Menu widget
         
 
@@ -40,67 +54,67 @@ class DataAnalysisApp:
 
         
         # Menu Fichier
-        file_menu = tk.Menu(menubar, tearoff=1)
-        file_menu.config(bg="lightblue",fg="white")
-        file_menu.add_command(label="New", command=lambda: None)
-        file_menu.add_command(label="Ouvrir", command=self.open_file)
-        file_menu.add_command(label="Sauvegarder", command=self.save_file)
-        file_menu.add_separator()
-        file_menu.add_command(label="Quitter", command=self.quit_app)
-        menubar.add_cascade(label="Fichier", menu=file_menu)
+        self.file_menu = tk.Menu(self.menubar, tearoff=1)
+        self.file_menu.config(bg="white",fg="black")
+        self.file_menu.add_command(label="New", command=lambda: None)
+        self.file_menu.add_command(label="Ouvrir", command=lambda: self.open_file())
+        self.file_menu.add_command(label="Sauvegarder", command=lambda: self.save_file())
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label="Quitter", command=lambda: self.quit_app())
+        self.menubar.add_cascade(label="Fichier", menu=self.file_menu)
         
         # Menu Paramètres
-        parameters_menu = tk.Menu(menubar, tearoff=0)
-        parameters_menu.config(bg="white",fg="black")
+        self.parameters_menu = tk.Menu(self.menubar, tearoff=0)
+        self.parameters_menu.config(bg="white",fg="black")
         
         # Sous-menu Thème
-        theme_menu = tk.Menu(parameters_menu, tearoff=0)
-        theme_menu.add_command(label="Dark", command=self.set_dark_theme)
-        theme_menu.add_command(label="Light", command=self.set_light_theme)
-        parameters_menu.add_cascade(label="Thème", menu=theme_menu)
+        self.theme_menu = tk.Menu(self.parameters_menu, tearoff=0)
+        self.theme_menu.add_command(label="Dark", command=self.set_dark_theme)
+        self.theme_menu.add_command(label="Light", command=self.set_light_theme)
+        self.parameters_menu.add_cascade(label="Thème", menu=self.theme_menu)
         
         # Sous-menu Taille
-        size_menu = tk.Menu(parameters_menu, tearoff=0)
-        size_menu.add_command(label="+", command=self.increase_size)
-        size_menu.add_command(label="-", command=self.decrease_size)
-        size_menu.add_command(label="Reintialiser", command=self.reset_size)
-        parameters_menu.add_cascade(label="Taille", menu=size_menu)
+        self.size_menu = tk.Menu(self.parameters_menu, tearoff=0)
+        self.size_menu.add_command(label="+", command=self.increase_size)
+        self.size_menu.add_command(label="-", command=self.decrease_size)
+        self.size_menu.add_command(label="Reintialiser", command=self.reset_size)
+        self.parameters_menu.add_cascade(label="Taille", menu=self.size_menu)
         
         # Sous-menu Langue
-        language_menu = tk.Menu(parameters_menu, tearoff=0)
-        language_menu.add_command(label="Anglais", command=self.set_language_english)
-        language_menu.add_command(label="Francais", command=self.set_language_french)
-        parameters_menu.add_cascade(label="Langue", menu=language_menu)
+        self.language_menu = tk.Menu(self.parameters_menu, tearoff=0)
+        self.language_menu.add_command(label="Anglais", command=self.set_language_english)
+        self.language_menu.add_command(label="Francais", command=self.set_language_french)
+        self.parameters_menu.add_cascade(label="Langue", menu=self.language_menu)
         
         # Sous-menu Préférences
-        preferences_menu = tk.Menu(parameters_menu, tearoff=0)
-        preferences_menu.add_command(label="Option 1", command=self.preference_option1)
-        preferences_menu.add_command(label="Option 2", command=self.preference_option2)
-        parameters_menu.add_cascade(label="Préférences", menu=preferences_menu)
+        self.preferences_menu = tk.Menu(self.parameters_menu, tearoff=0)
+        self.preferences_menu.add_command(label="Option 1", command=self.preference_option1)
+        self.preferences_menu.add_command(label="Option 2", command=self.preference_option2)
+        self.parameters_menu.add_cascade(label="Préférences", menu=self.preferences_menu)
         
-        menubar.add_cascade(label="Paramètres", menu=parameters_menu)
+        self.menubar.add_cascade(label="Paramètres", menu=self.parameters_menu)
         
-        master.config(menu=menubar)
+        master.config(menu=self.menubar)
 
         # Ajouter des onglets Input et Output
-        tab_control = ttk.Notebook(master)
-        tab_input = ttk.Frame(tab_control)
-        tab_input.configure(padding="0")
-        tab_output = ttk.Frame(tab_control)
-        tab_control.add(tab_input, text='Entree')
-        tab_control.add(tab_output, text='Sortie')
-        tab_control.pack(expand=1, fill="both")
+        self.tab_control = ttk.Notebook(master)
+        self.tab_input = ttk.Frame(self.tab_control)
+        self.tab_input.configure(padding="0")
+        self.tab_output = ttk.Frame(self.tab_control)
+        self.tab_control.add(self.tab_input, text='Entree')
+        self.tab_control.add(self.tab_output, text='Sortie')
+        self.tab_control.pack(expand=1, fill="both")
         
-        c_input=tk.Frame(tab_input)
-        c_input.pack(fill="both",padx=0,pady=0,ipadx=0,ipady=0)
-        c_input.config(bg="white")
+        self.c_input=tk.Frame(self.tab_input)
+        self.c_input.pack(fill="both",padx=0,pady=0,ipadx=0,ipady=0)
+        self.c_input.config(bg="white")
        
         
         
         #g_type style to be inserted
-        g_type = tk.Frame(c_input)
-        g_type.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
-        g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
+        self.g_type = tk.Frame(self.c_input)
+        self.g_type.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
+        self.g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
        
         #g_type style to be inserted
 
@@ -110,92 +124,100 @@ class DataAnalysisApp:
         
 
         # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        label_type = tk.Menubutton(g_type, text="Type de test >")
-        label_type.config(relief="ridge",bg="white",fg="black")
-        label_type.pack(side="left",padx=1)
+        self.label_type = tk.Menubutton(self.g_type, text="Type de test >")
+        self.label_type.config(relief="ridge",bg="white",fg="black")
+        self.label_type.pack(side="left",padx=1)
        
 
         # Create a menu for the menubutton
-        test_menu = tk.Menu(label_type, tearoff=1)
-        test_menu.config(relief="ridge",bg="white",fg="black")
-        test_menu.add_command(label="Anova one-way", command=lambda: select_test("Anova one-way"))
-        test_menu.add_command(label="t-test", command=lambda: select_test("t-test"))
+        self.test_menu = tk.Menu(self.label_type, tearoff=1)
+        self.test_menu.config(relief="ridge",bg="white",fg="black")
+        self.test_menu.add_command(label="MannWhitney", command=lambda: self.select_test("MannWhitney"))
+        self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
+        self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         
         # Attach the menu to the menubutton
-        label_type.config(menu=test_menu)
+        self.label_type.config(menu=self.test_menu)
         
-        entry_type = tk.Entry(g_type)
-        entry_type.pack(expand="true",side="left",anchor="w",padx="10")
-        entry_type.config(state="disabled")
-        st.setRelativeSizeEntry(entry_type,c_input,self.master,0.01)
+        self.entry_type = tk.Entry(self.g_type)
+        self.entry_type.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_type.config(state="disabled")
+        self.entry_type.config(highlightthickness=2)
+        
+        st.setRelativeSizeEntry(self.entry_type,self.c_input,self.master,0.02)
 
 
 
-        label_detect = tk.Button(g_type, text="Help to Detect ")
-        label_detect.config(relief="ridge",bg="white",fg="black")
-        label_detect.pack(side="left",padx=1)
+        self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
+        self.label_detect.config(relief="ridge",bg="white",fg="black")
+        self.label_detect.pack(side="left",padx=1)
        
 
 
-        g_nature = tk.Frame(c_input)
-        g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-        g_nature.config(bg="white",height=10,relief="solid",borderwidth=2)
+        self.g_nature = tk.Frame(self.c_input)
+        self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+        self.g_nature.config(bg="white",height=10,relief="solid",borderwidth=2)
 
          # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        label_nature = tk.Menubutton(g_nature, text="Test Nature >")
-        label_nature.config(relief="ridge",bg="white",fg="black")
-        label_nature.pack(side="left",padx=1)
+        self.label_nature = tk.Menubutton(self.g_nature, text="Test Nature >")
+        self.label_nature.config(relief="ridge",bg="white",fg="black")
+        self.label_nature.pack(side="left",padx=1)
        
 
         # Create a menu for the menubutton
-        nature_menu = tk.Menu(label_nature, tearoff=1)
-        nature_menu.config(relief="ridge",bg="white",fg="black")
-        nature_menu.add_command(label="two-tail", command=lambda: select_nature("two-tail"))
-        nature_menu.add_command(label="one-tail", command=lambda: select_nature("one-tail"))
+        self.nature_menu = tk.Menu(self.label_nature, tearoff=1)
+        self.nature_menu.config(relief="ridge",bg="white",fg="black")
+        self.nature_menu.add_command(label="two-tail", command=lambda: self.select_nature("two-tail"))
+        self.nature_menu.add_command(label="one-tail", command=lambda: self.select_nature("one-tail"))
         # Attach the menu to the menubutton
-        label_nature.config(menu=nature_menu)
-        entry_nature = tk.Entry(g_nature)
-        entry_nature.pack(expand="true",side="left",anchor="w",padx="10")
-        entry_nature.config(state="disabled")
-        st.setRelativeSizeEntry(entry_nature,c_input,self.master,0.01)
+        self.label_nature.config(menu=self.nature_menu)
+        self.entry_nature = tk.Entry(self.g_nature)
+        self.entry_nature.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_nature.config(state="disabled")
+        st.setRelativeSizeEntry(self.entry_nature,self.c_input,self.master,0.02)
 
         #description
 
 
 
-        g_desc = tk.Frame(c_input)
-        g_desc.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-        g_desc.config(bg="white",height=10)
+        self.g_desc = tk.Frame(self.c_input)
+        self.g_desc.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+        self.g_desc.config(bg="white",height=10)
 
          # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        label_desc = tk.Button(g_desc, text="H0 enoncé (optional) ")
-        label_desc.config(relief="ridge",bg="white",fg="black")
-        label_desc.pack(side="left",padx=1)
+        self.label_desc = tk.Button(self.g_desc, text="H0 enoncé (optional) ")
+        self.label_desc.config(relief="ridge",bg="white",fg="black")
+        self.label_desc.pack(side="left",padx=1)
        
         
-        entry_desc = tk.Entry(g_desc)
-        entry_desc.pack(expand="true",side="left",anchor="w",padx="10")
-        entry_desc.config(state="normal")
-        st.setRelativeSizeEntry(entry_desc,c_input,self.master,0.01)
+        self.entry_desc = tk.Entry(self.g_desc)
+        self.entry_desc.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_desc.config(state="normal")
+        st.setRelativeSizeEntry(self.entry_desc,self.c_input,self.master,0.12)
+        
+        self.entry_desc.bind("<KeyRelease>", lambda event:  self.set_desc())
+      
 
         #end description
 
         #seuil de signification
 
-        g_alpha = tk.Frame(c_input)
-        g_alpha.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-        g_alpha.config(bg="white",height=10)
+        self.g_alpha = tk.Frame(self.c_input)
+        self.g_alpha.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+        self.g_alpha.config(bg="white",height=10)
 
          # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        label_alpha = tk.Button(g_alpha, text="seuil de signification ")
-        label_alpha.config(relief="ridge",bg="white",fg="black")
-        label_alpha.pack(side="left",padx=1)
+        self.label_alpha = tk.Button(self.g_alpha, text="seuil de signification (α=0.05 by default) ")
+        self.label_alpha.config(relief="ridge",bg="white",fg="black")
+        self.label_alpha.pack(side="left",padx=1)
        
         
-        entry_alpha = tk.Entry(g_alpha)
-        entry_alpha.pack(expand="true",side="left",anchor="w",padx="10")
-        entry_alpha.config(state="normal")
-        st.setRelativeSizeEntry(entry_alpha,c_input,self.master,0.01)
+        self.entry_alpha = tk.Entry(self.g_alpha ,validate="key", validatecommand=(self.validation, "%P"))
+        self.entry_alpha.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_alpha.config(state="normal")
+        st.setRelativeSizeEntry(self.entry_alpha,self.c_input,self.master,0.01)
+        
+        self.entry_alpha.bind("<KeyRelease>", lambda event:  self.set_alpha())
 
         
         
@@ -216,24 +238,27 @@ class DataAnalysisApp:
         # table.insert("", "end", values=("Label 1", tk.Text(table, height=1)))
         # table.insert("", "end", values=("Label 2", tk.Text(table, height=1)))
 
+        
+        self.data_f,self.data_t,self.data_z=gui.createft("data input",self.c_input)
+        self.data_f.pack(expand="true",side="top",fill="both")
+        self.data_t.pack(expand="true",side="top",fill="both")
+        self.data_z.pack(expand="true",side="top",fill="both")
+         # Set up validation for data_z
+        self.data_z.bind("<Key>", self.validate_input)
+        st.setRelativeSize(self.master,self.data_z,self.master,0.03,0.02)
 
-        data_f,data_t,data_z=gui.createft("data input",c_input)
-        data_f.pack(expand="true",side="top",fill="both")
-        data_t.pack(expand="true",side="top",fill="both")
-        data_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,data_z,self.master,0.03,0.02)
 
-
-        validV = tk.Frame(c_input)
-        validV.pack(expand="true",side="bottom")
+        self.validV = tk.Frame(self.c_input)
+        self.validV.pack(expand="true",side="bottom")
 
         # Create three buttons
-        erase= tk.Button(validV, text="erase")
-        erase.pack(expand="true",fill="x",side="left",anchor="w" ,padx=10)
-        run = tk.Button(validV, text="run")
-        st.setRelativeSize(self.master,erase,self.master,0.001,0.02)
-        run.pack(expand="true",fill="x",side="left" , anchor="e")
-        st.setRelativeSize(self.master,run,self.master,0.001,0.02)
+        self.erase= tk.Button(self.validV, text="erase")
+        self.erase.pack(expand="true",fill="x",side="left",anchor="w" ,padx=10)
+        st.setRelativeSize(self.master,self.erase,self.master,0.001,0.02)
+        self.run = tk.Button(self.validV, text="run")
+        self.run.pack(expand="true",fill="x",side="left" , anchor="e")
+        st.setRelativeSize(self.master,self.run,self.master,0.001,0.02)
+        self.run.bind("<Button-1>", lambda event: self.runF())
 
 
 
@@ -241,64 +266,56 @@ class DataAnalysisApp:
 
 
         #output
-        c_output=tk.Frame(tab_output)
-        c_output.pack(fill="both",padx=0,pady=0,ipadx=0,ipady=0)
-        c_output.config(bg="white")
+        self.c_output=tk.Frame(self.tab_output)
+        self.c_output.pack(fill="both",padx=0,pady=0,ipadx=0,ipady=0)
+        self.c_output.config(bg="white")
 
 
-        form_f,form_t,form_z=gui.createft("1-formulation d'hypothèse",c_output)
-        form_f.pack(expand="true",side="top",fill="both")
-        form_t.pack(expand="true",side="top",fill="both")
-        form_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,form_z,self.master,0.01,0.02)
+        self.form_f,self.form_t,self.form_z=gui.createft("1-formulation d'hypothèse",self.c_output)
+        self.form_f.pack(expand="true",side="top",fill="both")
+        self.form_t.pack(expand="true",side="top",fill="both")
+        self.form_z.pack(expand="true",side="top",fill="both")
+        self.form_z.config(state="disabled")
+        st.setRelativeSize(self.master,self.form_z,self.master,0.01,0.02)
 
-        distro_f,distro_t,distro_z=gui.createft("2-choix de la loi",c_output)
-        distro_f.pack(expand="true",side="top",fill="both")
-        distro_t.pack(expand="true",side="top",fill="both")
-        distro_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,distro_z,self.master,0.01,0.02)
-
-
-        steps_f,steps_t,steps_z=gui.createft("3-valeurs du test",c_output)
-        steps_f.pack(expand="true",side="top",fill="both")
-        steps_t.pack(expand="true",side="top",fill="both")
-        steps_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,steps_z,self.master,0.01,0.02)
+        self.distro_f,self.distro_t,self.distro_z=gui.createft("2-choix de la loi",self.c_output)
+        self.distro_f.pack(expand="true",side="top",fill="both")
+        self.distro_t.pack(expand="true",side="top",fill="both")
+        self.distro_z.pack(expand="true",side="top",fill="both")
+        self.distro_z.config(state="disabled")
+        st.setRelativeSize(self.master,self.distro_z,self.master,0.01,0.02)
 
 
-        p_f,p_t,p_z=gui.createft("4- p-value",c_output)
-        p_f.pack(expand="true",side="top",fill="both")
-        p_t.pack(expand="true",side="top",fill="both")
-        p_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,p_z,self.master,0.01,0.02)
+        self.steps_f,self.steps_t,self.steps_z=gui.createft("3-valeurs du test",self.c_output)
+        self.steps_f.pack(expand="true",side="top",fill="both")
+        self.steps_t.pack(expand="true",side="top",fill="both")
+        self.steps_z.pack(expand="true",side="top",fill="both")
+        st.setRelativeSize(self.master,self.steps_z,self.master,0.01,0.02)
+        self.steps_z.config(state="disabled")
 
 
-        con_f,con_t,con_z=gui.createft("5- prise de decision et conclusion",c_output)
-        con_f.pack(expand="true",side="top",fill="both")
-        con_t.pack(expand="true",side="top",fill="both")
-        con_z.pack(expand="true",side="top",fill="both")
-        st.setRelativeSize(self.master,con_z,self.master,0.01,0.02)
+        self.p_f,self.p_t,self.p_z=gui.createft("4- p-value",self.c_output)
+        self.p_f.pack(expand="true",side="top",fill="both")
+        self.p_t.pack(expand="true",side="top",fill="both")
+        self.p_z.pack(expand="true",side="top",fill="both")
+        self.p_z.config(state="disabled")
+        st.setRelativeSize(self.master,self.p_z,self.master,0.01,0.02)
+
+
+        self.con_f,self.con_t,self.con_z=gui.createft("5- prise de decision et conclusion",self.c_output)
+        self.con_f.pack(expand="true",side="top",fill="both")
+        self.con_t.pack(expand="true",side="top",fill="both")
+        self.con_z.pack(expand="true",side="top",fill="both")
+        st.setRelativeSize(self.master,self.con_z,self.master,0.01,0.02)
+        self.con_z.config(state="disabled")
 
         
        
         
-        
 
     
-    def open_file(self):
-        file_path = filedialog.askopenfilename()
-        if file_path:
-            # Traiter le fichier ouvert
-            print("Fichier ouvert :", file_path)
-    
-    def save_file(self):
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt")
-        if file_path:
-            # Sauvegarder les données dans le fichier
-            print("Fichier sauvegardé :", file_path)
-    
     def quit_app(self):
-        self.destroy()
+        self.master.destroy()
     
     # Méthodes pour les actions des menus déroulants
     
@@ -347,8 +364,138 @@ class DataAnalysisApp:
         output_window = tk.Toplevel(self)
         output_window.title("Output")
         # Ajouter les éléments de l'interface pour l'onglet Output ici
+    def select_test(self,chosenTest):
+        
+        self.selectedTest=chosenTest
+        gui.update_entry_text(self.entry_type,self.selectedTest)
+
+        if self.selectedTest=="MannWhitney":
+            self.currentTest=MannWhitney(self.data)
+        if self.selectedTest=="Kruskal":
+            self.currentTest=Kruskal(self.data)
+
+    def select_nature(self,chosenNature):
+        self.selectedNature=chosenNature
+        gui.update_entry_text(self.entry_nature,self.selectedNature)
+
+
+    def runF(self):
+        self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+        self.currentTest.data=self.data
+        self.currentTest.datacontroller()
+        formhyp = self.currentTest.formHyp()
+        
+        gui.display_formatted_text(formhyp,self.form_z)
+        dist=self.currentTest.distribution()
+        gui.display_formatted_text(dist,self.distro_z)
+        steps=self.currentTest.steps(self.alpha)
+        gui.display_formatted_text(steps,self.steps_z)
+        testval = self.currentTest.testval()
+        gui.display_formatted_text(testval,self.p_z)
+        con = self.currentTest.conclusion(self.alpha,self.desc)
+        gui.display_formatted_text(con,self.con_z)
+        self.tab_control.select(self.tab_output)
+        
+
+
+
+                
+    def save_file(self):
+        filename = filedialog.asksaveasfilename(defaultextension=".tst", filetypes=(("Text files", "*.tst"), ("All files", "*.*")))
+        if filename:
+            with open(filename, "w") as f:
+                entries_and_texts = [
+                    self.entry_type.get(),
+                    self.entry_nature.get(),
+                    self.entry_desc.get(),
+                    self.entry_alpha.get(),
+                  
+                    self.data_z.get("1.0", "end-1c"),  # Get text excluding the trailing newline character
+                    self.form_z.get("1.0", "end-1c"),
+                    self.distro_z.get("1.0", "end-1c"),
+                    self.steps_z.get("1.0", "end-1c"),
+                    self.p_z.get("1.0", "end-1c"),
+                    self.con_z.get("1.0", "end-1c")
+                ]
+                f.write("|".join(entries_and_texts))  # Join all entries with pipe delimiter
+            print("File saved successfully.")
+
+    def open_file(self):
+        filename = filedialog.askopenfilename(filetypes=(("Text files", "*.tst"), ("All files", "*.*")))
+        if filename:
+            with open(filename, "r") as f:
+                contents = f.read().split('|')  # Split contents by pipe delimiter
+                if len(contents) == 10:  # Ensure all entries and texts are present
+                    # self.entry_type.delete(0, tk.END)
+                    # self.entry_type.insert(0, contents[0])
+                    self.select_test(contents[0])
+
+                    self.entry_nature.delete(0, tk.END)
+                    self.entry_nature.insert(0, contents[1])
+                    self.entry_desc.delete(0, tk.END)
+                    self.entry_desc.insert(0, contents[2])
+                    self.set_desc()
+                    self.entry_alpha.delete(0, tk.END)
+                    if contents[3]=="":
+                        contents[3]="0.05"
+                    self.entry_alpha.insert(0, contents[3])
+                    self.set_alpha()
+                                   
+                    self.data_z.delete("1.0", tk.END)
+                    self.data_z.insert("1.0", contents[4])
+                    self.form_z.delete("1.0", tk.END)
+                    self.form_z.insert("1.0", contents[5])
+                    self.distro_z.delete("1.0", tk.END)
+                    self.distro_z.insert("1.0", contents[6])
+                    self.steps_z.delete("1.0", tk.END)
+                    self.steps_z.insert("1.0", contents[7])
+                    self.p_z.delete("1.0", tk.END)
+                    self.p_z.insert("1.0", contents[8])
+                    self.con_z.delete("1.0", tk.END)
+                    self.con_z.insert("1.0", contents[9])
+                    print("File opened successfully.")
+                else:
+                    print("Invalid file format.")
+
+
+    def set_desc(self):
+        self.desc=self.entry_desc.get()
+    def set_alpha(self):
+        self.alpha=self.entry_alpha.get()
+    def validate_input(self, event):
+             # Allow normal processing for Backspace and Delete keys
+            if event.keysym in ["BackSpace", "Delete"]:
+                return
+            # Get the current cursor position
+            cursor_pos = self.data_z.index(tk.INSERT)
+            # Split cursor position into line and column indices
+            line, column = map(int, cursor_pos.split('.'))
+            
+            # Get the current text in the widget
+            current_text = self.data_z.get("1.0", "end-1c")
+
+            # Get the newly entered text
+            new_text = event.char if event.char else ""
+
+            # If text was selected, remove it from the current text
+            if self.data_z.tag_ranges("sel"):
+                start, end = self.data_z.tag_ranges("sel")
+                current_text = current_text[:start] + current_text[end:]
+
+            # Insert the newly entered text at the cursor position
+            new_text = current_text[:line-1] + new_text + current_text[line-1:]
+
+            # Validate the new text
+            if not gui.validate_data_z(new_text):
+                # Prevent the insertion of invalid text
+                return "break"
+
+
+    
 
 if __name__ == "__main__":
+  
+
     root = tk.Tk()
     app = DataAnalysisApp(root)
     root.mainloop()
