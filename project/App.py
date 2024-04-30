@@ -1,4 +1,7 @@
 import tkinter as tk
+import gettext
+import os
+import sys
 from tkinter import filedialog
 from tkinter import ttk
 
@@ -9,6 +12,15 @@ class DataAnalysisApp(tk.Tk):
         self.geometry("400x500")  # Augmenter la hauteur pour faire de la place au tableau
         
         self.create_widgets()
+        self.init_translation()
+    
+    def init_translation(self):
+        # Chemin vers le dossier contenant les fichiers de traduction
+        self.localdir = os.path.abspath(os.path.dirname(sys.argv[0])) + "/locale"
+        
+        # Charger les traductions pour la langue par défaut (français ici)
+        lang = gettext.translation('messages', self.localdir, languages=['fr'])
+        lang.install()
     
     def create_widgets(self):
         # Créer la barre de menu
@@ -27,8 +39,8 @@ class DataAnalysisApp(tk.Tk):
         
         # Sous-menu Thème
         theme_menu = tk.Menu(parameters_menu, tearoff=0)
-        theme_menu.add_command(label="Dark", command=self.set_dark_theme)
-        theme_menu.add_command(label="Light", command=self.set_light_theme)
+        theme_menu.add_command(label="Dark", command=self.dark_theme)
+        theme_menu.add_command(label="Light", command=self.light_theme)
         parameters_menu.add_cascade(label="Thème", menu=theme_menu)
         
         # Sous-menu Taille
@@ -86,23 +98,7 @@ class DataAnalysisApp(tk.Tk):
         label_seuil.grid(row=3, column=0, sticky="w", padx=(10, 5), pady=(5, 0))
         entry_seuil.grid(row=3, column=1, sticky="w", padx=(0, 10), pady=(5, 0))
         
-        # Ajout d'un tableau en bas avec deux labels et leurs champs d'entrée respectifs
-        table_frame = ttk.Frame(self)
-        table_frame.pack(pady=10, padx=10, fill="both", expand=True)
-        
-        table_label = ttk.Label(table_frame, text="Tableau de données")
-        table_label.pack(pady=(0, 5))
-        
-        # Création du tableau
-        table = ttk.Treeview(table_frame, columns=("Label", "Valeur"), show="headings")
-        table.heading("Label", text="Label")
-        table.heading("Valeur", text="Valeur")
-        table.pack(fill="both", expand=True)
-        
-        # Ajout des labels et champs dans le tableau
-        table.insert("", "end", values=("Label 1", tk.Text(table, height=1)))
-        table.insert("", "end", values=("Label 2", tk.Text(table, height=1)))
-        
+    # Méthodes pour les actions des menus déroulants
     
     def open_file(self):
         file_path = filedialog.askopenfilename()
@@ -119,15 +115,13 @@ class DataAnalysisApp(tk.Tk):
     def quit_app(self):
         self.destroy()
     
-    # Méthodes pour les actions des menus déroulants
+    def dark_theme(self):
+        self.config(bg="#212529")  # Changer la couleur de fond
+        self.update_theme_colors("#212529", "white")  # Changer la couleur des widgets
     
-    def set_dark_theme(self):
-        # Code pour définir le thème sombre
-        pass
-    
-    def set_light_theme(self):
-        # Code pour définir le thème clair
-        pass
+    def light_theme(self):
+        self.config(bg="white")  # Changer la couleur de fond
+        self.update_theme_colors("white", "black")  # Changer la couleur des widgets
     
     def increase_size(self):
         # Code pour augmenter la taille
@@ -142,12 +136,16 @@ class DataAnalysisApp(tk.Tk):
         pass
     
     def set_language_english(self):
-        # Code pour définir la langue sur l'anglais
-        pass
+        # Charger les traductions pour l'anglais
+        lang = gettext.translation('messages', self.localdir, languages=['en'])
+        lang.install()
+        self.update_labels()
     
     def set_language_french(self):
-        # Code pour définir la langue sur le français
-        pass
+        # Charger les traductions pour le français
+        lang = gettext.translation('messages', self.localdir, languages=['fr'])
+        lang.install()
+        self.update_labels()
     
     def preference_option1(self):
         # Code pour l'option 1 des préférences
