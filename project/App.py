@@ -8,6 +8,9 @@ from communfunctions import gui_items as gui
 from communfunctions import converter as ct
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
+from tests.AnovaOneWay import AnovaOneWay
+from tests.StudentTTest import StudentTTest
+from tests.Chi2 import Chi2
 
 
 # template
@@ -32,12 +35,14 @@ class DataAnalysisApp:
         # end main windows
 
         # explicit attributes
+        
+        self.desc=""
         self.alpha=0.05
         self.data=[]
         self.selectedTest=" "
         self.selectedNature=" "
         self.validation = self.master.register(gui.validate_input)
-       
+
 
 
         self.create_widgets(self.master)
@@ -108,26 +113,26 @@ class DataAnalysisApp:
         self.c_input=tk.Frame(self.tab_input)
         self.c_input.pack(fill="both",padx=0,pady=0,ipadx=0,ipady=0)
         self.c_input.config(bg="white")
-       
+
         
         
         #g_type style to be inserted
         self.g_type = tk.Frame(self.c_input)
         self.g_type.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
         self.g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
-       
+
         #g_type style to be inserted
 
 
 
-      
+        #g_nature style to be inserted
         
 
         # Ajouter un label "Seuil de Signification" et son champ après les onglets
         self.label_type = tk.Menubutton(self.g_type, text="Type de test >")
         self.label_type.config(relief="ridge",bg="white",fg="black")
         self.label_type.pack(side="left",padx=1)
-       
+
 
         # Create a menu for the menubutton
         self.test_menu = tk.Menu(self.label_type, tearoff=1)
@@ -135,6 +140,9 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="MannWhitney", command=lambda: self.select_test("MannWhitney"))
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
+        self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
+        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTTest"))
+        self.test_menu.add_command(label="Chi-2 ", command=lambda: self.select_test("Chi2"))
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -151,18 +159,18 @@ class DataAnalysisApp:
         self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
         self.label_detect.config(relief="ridge",bg="white",fg="black")
         self.label_detect.pack(side="left",padx=1)
-       
+
 
 
         self.g_nature = tk.Frame(self.c_input)
         self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
         self.g_nature.config(bg="white",height=10,relief="solid",borderwidth=2)
 
-         # Ajouter un label "Seuil de Signification" et son champ après les onglets
+        # Ajouter un label "Seuil de Signification" et son champ après les onglets
         self.label_nature = tk.Menubutton(self.g_nature, text="Test Nature >")
         self.label_nature.config(relief="ridge",bg="white",fg="black")
         self.label_nature.pack(side="left",padx=1)
-       
+
 
         # Create a menu for the menubutton
         self.nature_menu = tk.Menu(self.label_nature, tearoff=1)
@@ -259,6 +267,8 @@ class DataAnalysisApp:
         self.run.pack(expand="true",fill="x",side="left" , anchor="e")
         st.setRelativeSize(self.master,self.run,self.master,0.001,0.02)
         self.run.bind("<Button-1>", lambda event: self.runF())
+        
+        
 
 
 
@@ -373,13 +383,19 @@ class DataAnalysisApp:
             self.currentTest=MannWhitney(self.data)
         if self.selectedTest=="Kruskal":
             self.currentTest=Kruskal(self.data)
-
+        if self.selectedTest=="AnovaOneWay":
+            self.currentTest=AnovaOneWay(self.data)
+        if self.selectedTest=="StudentTTest":
+            self.currentTest=StudentTTest(self.data)
+        if self.selectedTest=="Chi2":
+            self.currentTest=Chi2(self.data)
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)
 
 
     def runF(self):
+
         self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
         self.currentTest.data=self.data
         self.currentTest.datacontroller()
@@ -494,7 +510,7 @@ class DataAnalysisApp:
     
 
 if __name__ == "__main__":
-  
+    # Create the main window
 
     root = tk.Tk()
     app = DataAnalysisApp(root)
