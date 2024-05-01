@@ -9,7 +9,7 @@ from communfunctions import converter as ct
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 from tests.AnovaOneWay import AnovaOneWay
-from tests.StudentTTest import StudentTTest
+from tests.StudentTest import StudentTest
 
 
 # template
@@ -140,7 +140,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
-        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTTest"))
+        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -381,8 +381,8 @@ class DataAnalysisApp:
             self.currentTest=Kruskal(self.data)
         if self.selectedTest=="AnovaOneWay":
             self.currentTest=AnovaOneWay(self.data)
-        if self.selectedTest=="StudentTTest":
-           self.currentTest=StudentTTest(self.data)   
+        if self.selectedTest=="StudentTest":
+           self.currentTest=StudentTest(self.data)   
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)
