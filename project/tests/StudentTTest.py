@@ -4,6 +4,7 @@ import numpy as np
 class StudentTTest:
 
     def __init__(self, data):
+        self.data = data
         self.sample1 = np.array(data[0])
         self.sample2 = np.array(data[1])
     
