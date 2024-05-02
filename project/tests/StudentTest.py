@@ -20,7 +20,7 @@ class StudentTest:
     
     def distribution(self):
         # Analyse de la distribution des données
-        return " "
+        return " la loi choisi est student "
     
     def testval(self):
         # Effectuer le test statistique
@@ -29,11 +29,13 @@ class StudentTest:
         # Calculer la valeur critique à partir de la distribution de Student
         df = sum(len(group) - 1 for group in self.dataSet)
         self.critical_value = t.ppf(1 - self.alpha / 2, df)
+        return " "
     
-    def steps(self, alpha):
+    def steps(self, alpha=0.05):
         # Définition des étapes du test avec un niveau de signification alpha
         self.alpha = float(alpha)
         self.formHyp()  # Affichage de l'hypothèse formulée
+        return " "
         
     def conclusion(self, alpha=0.05, desc=""):
             """
