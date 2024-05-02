@@ -1,7 +1,12 @@
 from scipy.stats import wilcoxon
 
-class WilcoxonTest:
+class Wilcoxon:
     def __init__(self, dataSet):
+      self.data=dataSet
+
+    def datacontroller(self,test_type="two-sided"):
+        dataSet=self.data
+        self.test_type=test_type
         if len(dataSet) != 2 or len(dataSet[0]) != len(dataSet[1]):
             raise ValueError("Les données doivent être un tuple de deux listes de longueur égale.")
         self.data1, self.data2 = dataSet  # Séparation du tuple en deux ensembles de données distincts
@@ -9,9 +14,6 @@ class WilcoxonTest:
         self.result = wilcoxon(self.data1, self.data2, alternative=self.test_type)
         self.stat = self.result.statistic
         self.p_value = self.result.pvalue
-
-    def datacontroller(self,test_type="two-sided"):
-        pass
 
     def formHyp(self):
         """Formule les hypothèses nulle et alternative en fonction du type de test."""
@@ -52,11 +54,17 @@ class WilcoxonTest:
         else:
             return f"Comme la p-value ({self.p_value:.4f}) est supérieure à alpha ({alpha}), nous ne rejetons pas l'hypothèse nulle."
 
-# Exemple d'utilisation de la classe WilcoxonTest
-dataSet = ([9, 10, 11, 10, 14, 15, 18, 10, 14, 12], [8, 10, 12, 9, 17, 13, 15, 11, 14, 10])
-test = WilcoxonTest(dataSet, test_type="two-sided")
-print(test.formHyp())
-print(test.distribution())
-print(test.testval())
-print(test.steps())
-print(test.conclusion())
+
+if __name__=="__main__":
+    # Exemple d'utilisation de la classe WilcoxonTest
+    dataSet = ([9, 10, 11, 10, 14, 15, 18, 10, 14, 12], [8, 10, 12, 9, 17, 13, 15, 11, 14, 10])
+    test = Wilcoxon(dataSet)
+
+    
+    print(test.datacontroller())
+    print(test.formHyp())
+
+    print(test.distribution())
+    print(test.testval())
+    print(test.steps())
+    print(test.conclusion())
