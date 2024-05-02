@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.AnovaOneWay import AnovaOneWay
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 
@@ -135,6 +136,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="MannWhitney", command=lambda: self.select_test("MannWhitney"))
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
+        self.test_menu.add_command(label="Anova One Way", command=lambda: self.select_test("AnovaOneWay"))
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -373,6 +375,8 @@ class DataAnalysisApp:
             self.currentTest=MannWhitney(self.data)
         if self.selectedTest=="Kruskal":
             self.currentTest=Kruskal(self.data)
+        if self.selectedTest=="AnovaOneWay":
+            self.currentTest=AnovaOneWay(self.data) 
 
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
@@ -380,6 +384,7 @@ class DataAnalysisApp:
 
 
     def runF(self):
+        print(self.currentTest)
         self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
         self.currentTest.data=self.data
         self.currentTest.datacontroller()
