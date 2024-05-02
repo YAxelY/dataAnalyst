@@ -7,8 +7,8 @@ class AnovaOneWay:
         
     def datacontroller(self):
         if len(self.data) > 1:
-            # Implement your data handling logic here
-            pass
+            self.p_value,_ = f_oneway(*self.data) 
+            
     
     def formHyp(self):
         n = len(self.data)
