@@ -57,9 +57,9 @@ class Chi2:
     # Prise de décision
     def conclusion(self):
         if self.stat_chi_carre < self.valeur_critique:
-            print("L'hypothèse nulle n'est pas rejetée. Les données suivent une distribution normale.")
+            return "L'hypothèse nulle n'est pas rejetée. Les données suivent une distribution normale."
         else:
-            print("L'hypothèse nulle est rejetée. Les données ne suivent pas une distribution normale.")
+            return "L'hypothèse nulle est rejetée. Les données ne suivent pas une distribution normale."
     
     # Exécution des étapes du test
     def steps(self, alpha):

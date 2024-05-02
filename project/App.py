@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.Wilcoxon import Wilcoxon
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 from tests.AnovaOneWay import AnovaOneWay
@@ -141,6 +142,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
+        self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -382,7 +384,11 @@ class DataAnalysisApp:
         if self.selectedTest=="AnovaOneWay":
             self.currentTest=AnovaOneWay(self.data)
         if self.selectedTest=="StudentTest":
-           self.currentTest=StudentTest(self.data)   
+           self.currentTest=StudentTest(self.data)  
+        if self.selectedTest=="Wilcoxon":
+            self.currentTest=Wilcoxon(self.data)  
+
+
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)

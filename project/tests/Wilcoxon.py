@@ -10,6 +10,9 @@ class WilcoxonTest:
         self.stat = self.result.statistic
         self.p_value = self.result.pvalue
 
+    def datacontroller(self,test_type="two-sided"):
+        pass
+
     def formHyp(self):
         """Formule les hypothèses nulle et alternative en fonction du type de test."""
         if self.test_type == "two-sided":
@@ -41,7 +44,7 @@ class WilcoxonTest:
             réponse += "Non-rejet de l'hypothèse nulle : Aucune différence significative."
         return réponse
 
-    def conclusion(self, alpha=0.05):
+    def conclusion(self, alpha=0.05,desc=""):
         """Détermine si l'hypothèse nulle peut être rejetée en fonction du niveau alpha."""
         alpha = float(alpha)
         if self.p_value < alpha:
