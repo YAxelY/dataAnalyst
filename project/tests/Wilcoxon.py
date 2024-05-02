@@ -1,7 +1,7 @@
 from scipy.stats import wilcoxon
 
 class WilcoxonTest:
-    def __init__(self, dataSet):
+    def __init__(self, dataSet, test_type="two-sided"):
         if len(dataSet) != 2 or len(dataSet[0]) != len(dataSet[1]):
             raise ValueError("Les données doivent être un tuple de deux listes de longueur égale.")
         self.data1, self.data2 = dataSet  # Séparation du tuple en deux ensembles de données distincts
