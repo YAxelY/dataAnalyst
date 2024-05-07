@@ -1,41 +1,45 @@
-from scipy.stats import chi2_contingency, chi2
-import tkinter as tk
-from tkinter import messagebox
+from scipy.stats import wilcoxon
 
-class ChiSquareTest:
-    def init(self, master):
-        self.master = master
-        self.master.title("Chi-Square Test Interface")
+class WilcoxonTest:
+    def init(self, dataSet):
+        self.data1, self.data2 = dataSet  # Séparation du tuple en deux ensembles de données distincts
 
-        # Create layout
-        tk.Label(master, text="Enter your contingency table data (comma-separated):").grid(row=0, column=0)
-        self.data_entry = tk.Text(master, height=5, width=40)
-        self.data_entry.grid(row=1, column=0, padx=10, pady=10)
-        self.data_entry.insert(tk.END, "10, 20, 30\n20, 20, 20")
-        
-        tk.Button(master, text="Run Test", command=self.run_test).grid(row=2, column=0, pady=10)
-        self.result = tk.Label(master, text="")
-        self.result.grid(row=3, column=0, pady=10)
+    def datacontroller(self):
+        """ Exécute le test de Wilcoxon sur les échantillons appariés. """
+        self.stat, self.p_value = wilcoxon(self.data1, self.data2)
 
-    def run_test(self):
-        data_text = self.data_entry.get("1.0", tk.END)
-        data = [list(map(int, line.split(','))) for line in data_text.strip().split('\n')]
-        self.dataSet = data
-        
-        try:
-            self.stat, self.p_value, self.dof, _ = chi2_contingency(self.dataSet)
-            critical_value = chi2.ppf(0.95, self.dof)
-            conclusion = f"Chi-Square Statistic: {self.stat:.2f}, p-value: {self.p_value:.4f}\n"
-            conclusion += f"Critical value at 95% confidence: {critical_value:.2f}\n"
-            if self.p_value < 0.05:
-                conclusion += "Result: Significant differences found (reject H0)."
-            else:
-                conclusion += "Result: No significant differences found (fail to reject H0)."
-            self.result.configure(text=conclusion)
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {e}")
+    def formHyp(self):
+        """ Formule les hypothèses nulle et alternative. """
+        return ("H0 : Il n'y a pas de différence significative entre les deux échantillons.\n"
+                "H1 : Il y a une différence significative entre les deux échantillons.")
 
-if name == "main":
-    root = tk.Tk()
-    app = ChiSquareTest(root)
-    root.mainloop()
+    def distribution(self):
+        """ Décrit la distribution utilisée pour le test. """
+        return "Le test de Wilcoxon est utilisé."
+
+    def testval(self):
+        """ Renvoie la p-value du test. """
+        return f"p-value : {self.p_value:.4f}"
+
+    def steps(self):
+        """ Fournit des résultats détaillés du test, incluant la statistique. """
+        return (f"Statistique : {self.stat:.4f}\n"
+                f"p-value : {self.p_value:.4f}")
+
+    def conclusion(self, alpha=0.05):
+        """ Détermine si l'hypothèse nulle peut être rejetée. """
+        alpha = float(alpha)
+        if self.p_value < alpha:
+            return "L'hypothèse nulle (H0) est rejetée. Il y a une différence significative entre les échantillons."
+        else:
+            return "Il n'y a pas suffisamment de preuves pour rejeter l'hypothèse nulle (H0)."
+
+# Utilisation de l'instance de la classe WilcoxonTest
+dataSet = ([9, 10, 11, 10, 14, 15, 18, 10, 14, 12], [8, 10, 12, 9, 17, 13, 15, 11, 14, 10])
+test = WilcoxonTest(dataSet)
+test.datacontroller()
+print(test.formHyp())
+print(test.distribution())
+print(test.testval())
+print(test.steps())
+print(test.conclusion())
