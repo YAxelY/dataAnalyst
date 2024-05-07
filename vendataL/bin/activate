@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/axel/Downloads/ownMade/notionsPractices/math/dataAnalyst/vendataL"
+VIRTUAL_ENV="/home/ken/Documents/workflow/data/dataAnalyst/vendataL"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

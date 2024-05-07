@@ -51,6 +51,7 @@ class Chi2:
     
     # Détermination de la valeur critique
     def testval(self):
+        self.chiSquare()
         p_value = 1 - chi2.cdf(self.stat_chi_carre, self.ddl)
         return "La P_value : {:.4f}".format(p_value)
 
@@ -76,6 +77,4 @@ class Chi2:
         return "Valeur critique du test {}".format(self.valeur_critique)
 
 if __name__ == '__main__':
-    dataSet = [[10, 20, 30], [25, 15]]
-    test_chi2_normal = Chi2(dataSet)
-    test_chi2_normal.steps()
+    pass

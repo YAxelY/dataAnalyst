@@ -479,7 +479,7 @@ class DataAnalysisApp:
     def set_alpha(self):
         self.alpha=self.entry_alpha.get()
     def validate_input(self, event):
-             # Allow normal processing for Backspace and Delete keys
+            # Allow normal processing for Backspace and Delete keys
             if event.keysym in ["BackSpace", "Delete"]:
                 return
             # Get the current cursor position

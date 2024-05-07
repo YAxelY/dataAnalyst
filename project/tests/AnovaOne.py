@@ -70,7 +70,7 @@ class AnovaOne:
         N=0
         for i in self.dataSet:
             N+=len(i)
-                       
+
 
     
 
