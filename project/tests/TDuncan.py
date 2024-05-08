@@ -43,16 +43,16 @@ if __name__ == '__main__':
 
 
 
-# # Example usage with multiple data groups
-# data1 = pd.DataFrame({'group': 'A', 'vals': [5, 4, 8, 6, 3]})
-# data2 = pd.DataFrame({'group': 'B', 'vals': [9, 7, 8, 6, 9]})
-# data3 = pd.DataFrame({'group': 'C', 'vals': [3, 5, 2, 3, 7]})
-# data4 = pd.DataFrame({'group': 'D', 'vals': [2, 3, 4, 1, 4]})
-# data5 = pd.DataFrame({'group': 'E', 'vals': [7, 6, 9, 4, 7]})
+    # Example usage with multiple data groups
+    data1 = pd.DataFrame({'group': 'A', 'vals': [5, 4, 8, 6, 3]})
+    data2 = pd.DataFrame({'group': 'B', 'vals': [9, 7, 8, 6, 9]})
+    data3 = pd.DataFrame({'group': 'C', 'vals': [3, 5, 2, 3, 7]})
+    data4 = pd.DataFrame({'group': 'D', 'vals': [2, 3, 4, 1, 4]})
+    data5 = pd.DataFrame({'group': 'E', 'vals': [7, 6, 9, 4, 7]})
 
 
-# duncan_test = TDuncan(data1, data2, data3, data4, data5)
-# print(duncan_test.formHypotheses())  # Print the null and alternative hypotheses
-# duncan_results = duncan_test.steps()  
-# print(duncan_results)  # Print detailed steps and results
-# duncan_test.conclude()  # Print a final conclusion
+    duncan_test = TDuncan(data1, data2, data3, data4, data5)
+    print(duncan_test.formHypotheses())  # Print the null and alternative hypotheses
+    duncan_results = duncan_test.steps()  
+    print(duncan_results)  # Print detailed steps and results
+    duncan_test.conclude()  # Print a final conclusion
