@@ -14,6 +14,7 @@ from tests.kruskal import Kruskal
 from tests.AnovaTwoWay import  AnovaTwoWay
 from tests.AnovaOneWay import AnovaOneWay
 from tests.StudentTest import StudentTest
+from tests.TDuncan import Duncan
 
 
 # template
@@ -144,6 +145,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="MannWhitney", command=lambda: self.select_test("MannWhitney"))
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
+        self.test_menu.add_command(label="Duncan", command=lambda: self.select_test("DUncan"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
