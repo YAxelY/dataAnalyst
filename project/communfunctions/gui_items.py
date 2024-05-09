@@ -187,3 +187,21 @@ def askYesNo(title, question):
 def askRetryCancel(title, question):
     result = messagebox.askretrycancel(title, question,master=None)
     return result  # Returns True or False
+
+
+def create_entry_frame(self,parent_frame, labels, entry_names):
+    # Create inner frame
+    inner_frame = tk.Frame(parent_frame)
+
+    # Create and place labels and entries
+    entries = {}
+    for label_text, entry_name in zip(labels, entry_names):
+        label = tk.Label(inner_frame, text=label_text)
+        label.pack(expand="true",side="top",fill="x")
+        entry = tk.Entry(inner_frame, name=entry_name,validate="key", validatecommand=(self.validation, "%P"))
+        entry.pack(expand="true",side="top",fill="x")
+        entries[entry_name] = entry
+
+    return inner_frame, entries
+
+

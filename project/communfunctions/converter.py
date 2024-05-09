@@ -38,3 +38,17 @@ def max_digit_number(numbers):
                 number_with_max_digit = number
     
     return number_with_max_digit
+
+
+def get_entry_values(entry_widgets):
+    entry_values = []
+    for entry in entry_widgets:
+        entry_values += [entry.get()]
+    return entry_values
+
+def get_entry_valuesd(entryWidgetsDict):
+    entryValues = list(entryWidgetsDict.values())
+    entryv = []
+    for entry in entryValues:
+        entryv +=[entry.get()]
+    return entryv
