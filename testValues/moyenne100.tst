@@ -1,0 +1,2 @@
+OneSampleMeanTestG|||0.05|5 4 8 6 3
+|||||

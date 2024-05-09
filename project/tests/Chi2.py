@@ -51,16 +51,25 @@ class Chi2:
     
     # Détermination de la valeur critique
     def testval(self):
+<<<<<<< HEAD
         self.chiSquare()
+=======
+>>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
         p_value = 1 - chi2.cdf(self.stat_chi_carre, self.ddl)
         return "La P_value : {:.4f}".format(p_value)
 
     # Prise de décision
     def conclusion(self):
         if self.stat_chi_carre < self.valeur_critique:
+<<<<<<< HEAD
             print("L'hypothèse nulle n'est pas rejetée. Les données suivent une distribution normale.")
         else:
             print("L'hypothèse nulle est rejetée. Les données ne suivent pas une distribution normale.")
+=======
+            return "L'hypothèse nulle n'est pas rejetée. Les données suivent une distribution normale."
+        else:
+            return "L'hypothèse nulle est rejetée. Les données ne suivent pas une distribution normale."
+>>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
     
     # Exécution des étapes du test
     def steps(self, alpha):

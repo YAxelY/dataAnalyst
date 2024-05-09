@@ -36,25 +36,29 @@ class AnovaTwo:
         anova_table = self.testval()
         p_value_interaction = anova_table.loc['C(water):C(sun)', 'PR(>F)']
         if p_value_interaction < alpha:
+            print("-----------------------------------------------------------------------------\n")
             print("The interaction between the factors water and sun is significant.")
         else:
+            print("----------------------------------------------------------------")
             print("The interaction between the factors water and sun is not significant.")
         p_values_main_effects = anova_table.loc[['C(water)', 'C(sun)'], 'PR(>F)']
         for factor, p_value in p_values_main_effects.items():
             if p_value < alpha:
+                print("--------------------------------")
                 print(f"The effect of the factor {factor} is significant.")
             else:
+                print("--------------------------------")
                 print(f"The effect of the factor {factor} is not significant.")
 
 # Creating the data
 data = {'water': np.repeat(['daily', 'weekly'], 15),
         'sun': np.tile(np.repeat(['low', 'med', 'high'], 5), 2),
         'height': [6, 6, 6, 5, 6, 5, 5, 6, 4, 5,
-                   6, 6, 7, 8, 7, 3, 4, 4, 4, 5,
-                   4, 4, 4, 4, 4, 5, 6, 6, 7, 8]}
+                    6, 6, 7, 8, 7, 3, 4, 4, 4, 5,
+                    4, 4, 4, 4, 4, 5, 6, 6, 7, 8]}
 
 # Instantiating the AnovaTwo class
-anova = AnovaTwo(data.values)
+anova = AnovaTwo(data)
 
 # Using the class methods
 print(anova.formHyp())
