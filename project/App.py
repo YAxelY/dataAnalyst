@@ -6,6 +6,8 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.Chi2Homogeneity import Chi2Homogeneity
+from tests.Chi2 import Chi2
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
 from tests.BathlettTTEst import BartlettTest
@@ -189,6 +191,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
+        self.test_menu.add_command(label="Test d'homegeneité du chi deux", command=lambda: self.select_test("ChiSquareHomogeneityTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
         
 # >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
@@ -533,6 +536,10 @@ class DataAnalysisApp:
             self.OneSampleMeanTestG=1
             self.currentTest=OneSampleMeanTestG(self.data)
 
+
+        #Ajout du chi deux d'homogeneite
+        if self.selectedTest=="Chi2Homogeneity":
+            self.currentTest == Chi2Homogeneity(self.data)
             
             # Ajouter un label "Seuil de Signification" et son champ après les onglets
             self.label_tmean = tk.Button(self.g_commun, text="moyenne  thérique (by default u=0)")
