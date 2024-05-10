@@ -16,6 +16,7 @@ from tests.kruskal import Kruskal
 from tests.AnovaTwoWay import  AnovaTwoWay
 from tests.AnovaOneWay import AnovaOneWay
 from tests.StudentTest import StudentTest
+from tests.CochranTest import CochranTest
 
 
 # template
@@ -48,6 +49,7 @@ class DataAnalysisApp:
         self.data=[]
         self.selectedTest=" "
         self.selectedNature=" "
+        self.currentTest=AnovaOneWay(self.data)
         self.validation = self.master.register(gui.validate_input)
        
 
@@ -178,7 +180,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
-        
+        self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
         
         
         # Attach the menu to the menubutton
@@ -490,6 +492,8 @@ class DataAnalysisApp:
         if self.selectedTest=="Wilcoxon":
             self.Wilcoxon=1
             self.currentTest=Wilcoxon(self.data)  
+        if self.selectedTest=="CochranTest":
+            self.currentTest=CochranTest(self.data)    
         if self.selectedTest=="BathlettTTEst":
 
            
