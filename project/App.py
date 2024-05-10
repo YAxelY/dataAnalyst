@@ -6,6 +6,8 @@ from prettytable import PrettyTable
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.BathlettTTEst import BartlettTest
+from tests.Wilcoxon import Wilcoxon
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 from tests.AnovaOneWay import AnovaOneWay
@@ -141,6 +143,8 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
+        self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
+        self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -173,8 +177,9 @@ class DataAnalysisApp:
         # Create a menu for the menubutton
         self.nature_menu = tk.Menu(self.label_nature, tearoff=1)
         self.nature_menu.config(relief="ridge",bg="white",fg="black")
-        self.nature_menu.add_command(label="two-tail", command=lambda: self.select_nature("two-tail"))
-        self.nature_menu.add_command(label="one-tail", command=lambda: self.select_nature("one-tail"))
+        self.nature_menu.add_command(label="two-tail", command=lambda: self.select_nature("two-sided"))
+        self.nature_menu.add_command(label="greater", command=lambda: self.select_nature("greater"))
+        self.nature_menu.add_command(label="less", command=lambda: self.select_nature("less"))
         # Attach the menu to the menubutton
         self.label_nature.config(menu=self.nature_menu)
         self.entry_nature = tk.Entry(self.g_nature)
@@ -373,6 +378,8 @@ class DataAnalysisApp:
     def select_test(self,chosenTest):
         
         self.selectedTest=chosenTest
+        self.Wilcoxon=0
+        self.BartlettTest=0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
@@ -382,17 +389,28 @@ class DataAnalysisApp:
         if self.selectedTest=="AnovaOneWay":
             self.currentTest=AnovaOneWay(self.data)
         if self.selectedTest=="StudentTest":
-           self.currentTest=StudentTest(self.data)   
+           self.currentTest=StudentTest(self.data)  
+        if self.selectedTest=="Wilcoxon":
+            self.Wilcoxon=1
+            self.currentTest=Wilcoxon(self.data)  
+        if self.selectedTest=="BathlettTTEst":
+            self.BartlettTest=1
+            self.currentTest=BartlettTest(self.data)
+            
+
+
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)
 
 
     def runF(self):
-
         self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
         self.currentTest.data=self.data
         self.currentTest.datacontroller()
+        if self.Wilcoxon==1:
+            self.currentTest.datacontroller(self.selectedNature)
+
         formhyp = self.currentTest.formHyp()
         
         gui.display_formatted_text(formhyp,self.form_z)
