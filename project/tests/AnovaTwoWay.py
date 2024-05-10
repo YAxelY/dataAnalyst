@@ -9,6 +9,7 @@ class AnovaTwoWay:
     def datacontroller(self):
         self.data = [sublist for sublist in self.data if sublist]
         
+        
         self.tj=self.compute_sum_of_tj( self.data)
         self.ti=self.compute_sum_of_ti( self.data)
         self.T_2=self.compute_sum_of_t( self.data)

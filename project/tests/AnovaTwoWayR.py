@@ -7,7 +7,9 @@ class AnovaTwoWayR:
         self.data = data_set
         
     def datacontroller(self):
+        
         self.data = [sublist for sublist in self.data if sublist]
+        print(self.data)
         
         self.tj=self.compute_sum_of_tj( self.data)
         
