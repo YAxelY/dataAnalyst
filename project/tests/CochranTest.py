@@ -3,11 +3,12 @@ from scipy.stats import chi2_contingency
 
 class CochranTest:
     def __init__(self, dataSet):
-        self.dataSet = np.array(dataSet)
-        self.groups = len(dataSet)
+        self.data = np.array(dataSet)
+        
         
     def datacontroller(self):
-        if all(len(group) >= 2 for group in self.dataSet):
+        self.groups = len(self.data)
+        if all(len(group) >= 2 for group in self.data):
             return "Les données sont valides pour l'analyse."
         else:
             return "Chaque groupe doit contenir au moins deux observations pour le test de Cochran."
@@ -19,7 +20,8 @@ class CochranTest:
         return "Pas besoin d'analyser la distribution des données pour le test de Cochran."
         
     def testval(self):
-        result = chi2_contingency(self.dataSet)
+        print(self.data)
+        result = chi2_contingency(self.data)
         return result
 
     def steps(self, alpha):
