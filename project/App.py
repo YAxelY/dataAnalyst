@@ -2,14 +2,21 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 from prettytable import PrettyTable
-
+from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.CochranTest import CochranTest
+from tests.AnovaTwoWayR import AnovaTwoWayR
+from tests.moyenneinfo import OneSampleMeanTestGinfo
+from tests.Moyenne2 import OneSampleMeanTestG
+from tests.BathlettTTEst import BartlettTest
+from tests.Wilcoxon import Wilcoxon
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
+from tests.AnovaTwoWay import  AnovaTwoWay
 from tests.AnovaOneWay import AnovaOneWay
-from tests.StudentTTest import StudentTTest
+from tests.StudentTest import StudentTest
 
 
 # template
@@ -34,13 +41,16 @@ class DataAnalysisApp:
         # end main windows
 
         # explicit attributes
-        
+        self.dataInputMode="tables"
+        self.tmean=0
+        self.already=1
         self.desc=""
         self.alpha=0.05
         self.data=[]
         self.selectedTest=" "
         self.selectedNature=" "
         self.validation = self.master.register(gui.validate_input)
+        self.currentTest=AnovaOneWay(self.data)
        
 
 
@@ -120,7 +130,31 @@ class DataAnalysisApp:
         self.g_type.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
         self.g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
        
-        #g_type style to be inserted
+    #g_type style to be inserted
+        self.g_nature = tk.Frame(self.c_input)
+       
+        self.g_nature.config(bg="white",height=10,relief="solid",borderwidth=2)
+
+    
+
+        # Ajouter un label "Seuil de Signification" et son champ après les onglets
+        self.label_nature = tk.Menubutton(self.g_nature, text="Test Nature >")
+        self.label_nature.config(relief="ridge",bg="white",fg="black")
+        self.label_nature.pack(side="left",padx=1)
+    
+
+        # Create a menu for the menubutton
+        self.nature_menu = tk.Menu(self.label_nature, tearoff=1)
+        self.nature_menu.config(relief="ridge",bg="white",fg="black")
+        self.nature_menu.add_command(label="two-tail", command=lambda: self.select_nature("two-sided"))
+        self.nature_menu.add_command(label="greater", command=lambda: self.select_nature("greater"))
+        self.nature_menu.add_command(label="less", command=lambda: self.select_nature("less"))
+        # Attach the menu to the menubutton
+        self.label_nature.config(menu=self.nature_menu)
+        self.entry_nature = tk.Entry(self.g_nature)
+        self.entry_nature.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_nature.config(state="disabled")
+        st.setRelativeSizeEntry(self.entry_nature,self.c_input,self.master,0.02)
 
 
 
@@ -140,7 +174,15 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
-        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTTest"))
+        self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
+        self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
+        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
+        self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
+        self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
+        self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
+        self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
+        
+        
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -154,57 +196,49 @@ class DataAnalysisApp:
 
 
 
-        self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
-        self.label_detect.config(relief="ridge",bg="white",fg="black")
-        self.label_detect.pack(side="left",padx=1)
+        # self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
+        # self.label_detect.config(relief="ridge",bg="white",fg="black")
+        # self.label_detect.pack(side="left",padx=1)
        
 
+        
+        self.g_commun = tk.Frame(self.c_input)
+        self.g_commun.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+        self.g_commun.config(bg="white")
+        
 
-        self.g_nature = tk.Frame(self.c_input)
-        self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-        self.g_nature.config(bg="white",height=10,relief="solid",borderwidth=2)
 
-         # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        self.label_nature = tk.Menubutton(self.g_nature, text="Test Nature >")
-        self.label_nature.config(relief="ridge",bg="white",fg="black")
-        self.label_nature.pack(side="left",padx=1)
-       
+
+
+
+
+
+
+        self.g_mode = tk.Frame(self.c_input)
+      
+        self.g_mode.config(bg="white",height=10,relief="solid",borderwidth=1)
+        # Ajouter un label "Seuil de Signification" et son champ après les onglets
+        self.label_mode = tk.Menubutton(self.g_mode, text="data input mode >")
+        self.label_mode.config(relief="ridge",bg="white",fg="black")
+        self.label_mode.pack(side="left",padx=1)
+    
 
         # Create a menu for the menubutton
-        self.nature_menu = tk.Menu(self.label_nature, tearoff=1)
-        self.nature_menu.config(relief="ridge",bg="white",fg="black")
-        self.nature_menu.add_command(label="two-tail", command=lambda: self.select_nature("two-tail"))
-        self.nature_menu.add_command(label="one-tail", command=lambda: self.select_nature("one-tail"))
+        self.mode_menu = tk.Menu(self.label_mode, tearoff=1)
+        self.mode_menu.config(relief="ridge",bg="white",fg="black")
+        self.mode_menu.add_command(label="table", command=lambda: self.select_mode("tables"))
+        self.mode_menu.add_command(label="informations", command=lambda: self.select_mode("informations"))
+        
+        
         # Attach the menu to the menubutton
-        self.label_nature.config(menu=self.nature_menu)
-        self.entry_nature = tk.Entry(self.g_nature)
-        self.entry_nature.pack(expand="true",side="left",anchor="w",padx="10")
-        self.entry_nature.config(state="disabled")
-        st.setRelativeSizeEntry(self.entry_nature,self.c_input,self.master,0.02)
-
-        #description
-
-
-
-        self.g_desc = tk.Frame(self.c_input)
-        self.g_desc.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-        self.g_desc.config(bg="white",height=10)
-
-         # Ajouter un label "Seuil de Signification" et son champ après les onglets
-        self.label_desc = tk.Button(self.g_desc, text="H0 enoncé (optional) ")
-        self.label_desc.config(relief="ridge",bg="white",fg="black")
-        self.label_desc.pack(side="left",padx=1)
-       
+        self.label_mode.config(menu=self.mode_menu)
         
-        self.entry_desc = tk.Entry(self.g_desc)
-        self.entry_desc.pack(expand="true",side="left",anchor="w",padx="10")
-        self.entry_desc.config(state="normal")
-        st.setRelativeSizeEntry(self.entry_desc,self.c_input,self.master,0.12)
+        self.entry_mode = tk.Entry(self.g_mode)
+        self.entry_mode.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_mode.config(state="disabled")
+        self.entry_mode.config(highlightthickness=2)
         
-        self.entry_desc.bind("<KeyRelease>", lambda event:  self.set_desc())
-      
-
-        #end description
+        st.setRelativeSizeEntry(self.entry_mode,self.c_input,self.master,0.02)
 
         #seuil de signification
 
@@ -244,15 +278,22 @@ class DataAnalysisApp:
         # table.insert("", "end", values=("Label 1", tk.Text(table, height=1)))
         # table.insert("", "end", values=("Label 2", tk.Text(table, height=1)))
 
-        
-        self.data_f,self.data_t,self.data_z=gui.createft("data input",self.c_input)
-        self.data_f.pack(expand="true",side="top",fill="both")
+        # data input code
+        self.data_f,self.data_t,self.data_z=gui.createft("data input e.g: \n1 2 3(first sample )\n 1 2 3 (second sample)",self.c_input)
+        self.data_f.pack(expand="true",side="bottom",fill="both")
         self.data_t.pack(expand="true",side="top",fill="both")
         self.data_z.pack(expand="true",side="top",fill="both")
          # Set up validation for data_z
         self.data_z.bind("<Key>", self.validate_input)
-        st.setRelativeSize(self.master,self.data_z,self.master,0.03,0.02)
+        st.setRelativeSize(self.master,self.data_z,self.master,0.02,0.01)
 
+        self.data_fi,self.i_entries=gui.create_entry_frame(self,self.c_input,["entrer la taille de l 'echantillon:","entrer l'ecart-type de l'echantillon:","entrer la moyenne de l'echantillon:"],["taille","ecart","moy"])
+      
+     
+
+        # end data input code
+
+        # validation button norminal cases
 
         self.validV = tk.Frame(self.c_input)
         self.validV.pack(expand="true",side="bottom")
@@ -265,6 +306,7 @@ class DataAnalysisApp:
         self.run.pack(expand="true",fill="x",side="left" , anchor="e")
         st.setRelativeSize(self.master,self.run,self.master,0.001,0.02)
         self.run.bind("<Button-1>", lambda event: self.runF())
+
 
 
 
@@ -300,7 +342,7 @@ class DataAnalysisApp:
         self.steps_z.config(state="disabled")
 
 
-        self.p_f,self.p_t,self.p_z=gui.createft("4- p-value",self.c_output)
+        self.p_f,self.p_t,self.p_z=gui.createft("4- p-value ou interval de confiance",self.c_output)
         self.p_f.pack(expand="true",side="top",fill="both")
         self.p_t.pack(expand="true",side="top",fill="both")
         self.p_z.pack(expand="true",side="top",fill="both")
@@ -370,106 +412,289 @@ class DataAnalysisApp:
         output_window = tk.Toplevel(self)
         output_window.title("Output")
         # Ajouter les éléments de l'interface pour l'onglet Output ici
+
     def select_test(self,chosenTest):
         
+        for child in self.g_commun.winfo_children():
+            child.destroy()
+        self.data_f.pack(expand="true",side="bottom",fill="both")
+        self.data_fi.pack_forget()
+        self.g_mode.pack_forget()
+        
+        self.g_nature.pack_forget()
+
+
+
+
+        if self.already==1:
+
+       
+            #description
+
+            #description
+
+
+
+            self.g_desc = tk.Frame(self.c_input)
+            self.g_desc.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+            self.g_desc.config(bg="white",height=10)
+
+            # Ajouter un label "Seuil de Signification" et son champ après les onglets
+            self.label_desc = tk.Button(self.g_desc, text="H0 enoncé (optional) ")
+            self.label_desc.config(relief="ridge",bg="white",fg="black")
+           # self.label_desc.pack(side="left",padx=1)
+        
+            
+            self.entry_desc = tk.Entry(self.g_desc)
+           # self.entry_desc.pack(expand="true",side="left",anchor="w",padx="10")
+            self.entry_desc.config(state="normal")
+            st.setRelativeSizeEntry(self.entry_desc,self.c_input,self.master,0.12)
+            
+            self.entry_desc.bind("<KeyRelease>", lambda event:  self.set_desc())
+            self.already=0
+        
+
+
+    
+
+        
         self.selectedTest=chosenTest
+        self.Wilcoxon=0
+        self.BartlettTest=0
+        self.OneSampleMeanTestG=0
+        self.anovaTwoWay=0
+        self.anovaTwoWayR=0
+        self.CochranTest=0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
             self.currentTest=MannWhitney(self.data)
+            
+   
+
+            # Ajouter un label "Seuil de Signification" et son champ après les onglets
+            self.label_desc = tk.Button(self.g_commun, text="H0 enoncé (optional) ")
+            self.label_desc.config(relief="ridge",bg="white",fg="black")
+            self.label_desc.pack(side="left",padx=1)
+        
+            
+            self.entry_desc = tk.Entry(self.g_commun)
+            self.entry_desc.pack(expand="true",side="left",anchor="w",padx="10")
+            self.entry_desc.config(state="normal")
+            st.setRelativeSizeEntry(self.entry_desc,self.c_input,self.master,0.12)
+            
+            self.entry_desc.bind("<KeyRelease>", lambda event:  self.set_desc())
+            self.already=0
         if self.selectedTest=="Kruskal":
             self.currentTest=Kruskal(self.data)
         if self.selectedTest=="AnovaOneWay":
             self.currentTest=AnovaOneWay(self.data)
-        if self.selectedTest=="StudentTTest":
-           self.currentTest=StudentTTest(self.data)   
+        if self.selectedTest=="StudentTest":
+           self.currentTest=StudentTest(self.data)  
+        if self.selectedTest=="Wilcoxon":
+            self.Wilcoxon=1
+            self.currentTest=Wilcoxon(self.data)  
+        if self.selectedTest=="BathlettTTEst":
+
+           
+
+            self.BartlettTest=1
+            self.currentTest=BartlettTest(self.data)
+        if self.selectedTest=="OneSampleMeanTestG":
+            
+            self.OneSampleMeanTestG=1
+            self.currentTest=OneSampleMeanTestG(self.data)
+
+            
+            # Ajouter un label "Seuil de Signification" et son champ après les onglets
+            self.label_tmean = tk.Button(self.g_commun, text="moyenne  thérique (by default u=0)")
+            self.label_tmean.config(relief="ridge",bg="white",fg="black")
+            self.label_tmean.pack(side="left",padx=1)
+        
+            
+            self.entry_tmean = tk.Entry(self.g_commun)
+            self.entry_tmean.pack(expand="true",side="left",anchor="w",padx="10")
+            self.entry_tmean.config(state="normal")
+            st.setRelativeSizeEntry(self.entry_tmean,self.c_input,self.master,0.12)
+            
+            self.entry_tmean.bind("<KeyRelease>", lambda event:  self.set_tmean())
+            self.g_mode.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
+            self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+
+
+
+        if self.selectedTest=="AnovaTwoWay":
+            self.anovaTwoWay=1
+            self.currentTest=AnovaTwoWay(self.data)
+  
+
+        if self.selectedTest=="AnovaTwoWayR":
+           
+            self.anovaTwoWayR=1
+            self.currentTest=AnovaTwoWayR(self.data)
+        if self.selectedTest=="CochranTest":
+            print("here")
+            self.CochranTest=1
+            self.currentTest= CochranTest(self.data)
+           
+            
+        self.previousTest=self.currentTest
+
+
+           
+            
+           
+        
+    
+
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)
+    
+    def select_mode(self,chosenMode):
+        self.selectedMode=chosenMode
+        self.dataInputMode=chosenMode
+        gui.update_entry_text(self.entry_mode,self.selectedMode)
+
+        if self.selectedMode=="informations":
+            self.data_f.pack_forget()
+            self.data_fi.pack(expand="true",side="top",fill="both")
+            if self.selectedTest=="OneSampleMeanTestG":
+                self.currentTest=OneSampleMeanTestGinfo(self.data)
+        if self.selectedMode=="tables":
+            self.currentTest=self.previousTest
+            self.data_f.pack(expand="true",side="bottom",fill="both")
+            self.data_fi.pack_forget()
+            # self.data_t.pack(expand="true",side="top",fill="both")
+            # self.data_z.pack(expand="true",side="top",fill="both")
 
 
     def runF(self):
-
-        self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
-        self.currentTest.data=self.data
-        self.currentTest.datacontroller()
-        formhyp = self.currentTest.formHyp()
-        
-        gui.display_formatted_text(formhyp,self.form_z)
-        dist=self.currentTest.distribution()
-        gui.display_formatted_text(dist,self.distro_z)
-        steps=self.currentTest.steps(self.alpha)
-        gui.display_formatted_text(steps,self.steps_z)
-        testval = self.currentTest.testval()
-        gui.display_formatted_text(testval,self.p_z)
-        con = self.currentTest.conclusion(self.alpha,self.desc)
-        gui.display_formatted_text(con,self.con_z)
-        self.tab_control.select(self.tab_output)
-        
-
-
-
+        if self.dataInputMode=="tables":
+            if self.anovaTwoWayR==1:
                 
+                self.currentTest.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
+                print(self.data)
+            
+            else:
+                self.currentTest.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+            
+            self.currentTest.datacontroller()
+            if self.Wilcoxon==1:
+                self.currentTest.datacontroller(self.selectedNature)
+            if  self.OneSampleMeanTestG==1:
+                self.currentTest.datacontroller(float(self.tmean))
+            
+
+            formhyp = self.currentTest.formHyp()
+            
+            gui.display_formatted_text(formhyp,self.form_z)
+            dist=self.currentTest.distribution()
+            gui.display_formatted_text(dist,self.distro_z)
+            steps=self.currentTest.steps(self.alpha)
+            gui.display_formatted_text(steps,self.steps_z)
+            testval = self.currentTest.testval()
+            gui.display_formatted_text(testval,self.p_z)
+            con = self.currentTest.conclusion(self.alpha,self.desc)
+            gui.display_formatted_text(con,self.con_z)
+            self.tab_control.select(self.tab_output)
+        if self.dataInputMode=="informations":
+            print(self.i_entries)
+            self.data=ct.get_entry_valuesd(self.i_entries)
+            if self.selectedTest=="OneSampleMeanTestG":
+                
+                
+                self.data=self.data+[self.tmean]+[self.alpha]+[self.selectedNature]
+                print(self.data)
+            
+
+
+
+                    
     def save_file(self):
         filename = filedialog.asksaveasfilename(defaultextension=".tst", filetypes=(("Text files", "*.tst"), ("All files", "*.*")))
         if filename:
             with open(filename, "w") as f:
                 entries_and_texts = [
-                    self.entry_type.get(),
-                    self.entry_nature.get(),
-                    self.entry_desc.get(),
-                    self.entry_alpha.get(),
-                  
-                    self.data_z.get("1.0", "end-1c"),  # Get text excluding the trailing newline character
-                    self.form_z.get("1.0", "end-1c"),
-                    self.distro_z.get("1.0", "end-1c"),
-                    self.steps_z.get("1.0", "end-1c"),
-                    self.p_z.get("1.0", "end-1c"),
-                    self.con_z.get("1.0", "end-1c")
+                    self.entry_type.get() if hasattr(self, "entry_type") else "",
+                    self.entry_nature.get() if hasattr(self, "entry_nature") else "",
+                    self.entry_desc.get() if hasattr(self, "entry_desc") else "",
+                    self.entry_alpha.get() if hasattr(self, "entry_alpha") else "",
+                    self.data_z.get("1.0", "end-1c") if hasattr(self, "data_z") else "",
+                    self.form_z.get("1.0", "end-1c") if hasattr(self, "form_z") else "",
+                    self.distro_z.get("1.0", "end-1c") if hasattr(self, "distro_z") else "",
+                    self.steps_z.get("1.0", "end-1c") if hasattr(self, "steps_z") else "",
+                    self.p_z.get("1.0", "end-1c") if hasattr(self, "p_z") else "",
+                    self.con_z.get("1.0", "end-1c") if hasattr(self, "con_z") else "",
+                    self.entry_tmean.get() if hasattr(self, "entry_tmean") else ""
                 ]
                 f.write("|".join(entries_and_texts))  # Join all entries with pipe delimiter
             print("File saved successfully.")
+
 
     def open_file(self):
         filename = filedialog.askopenfilename(filetypes=(("Text files", "*.tst"), ("All files", "*.*")))
         if filename:
             with open(filename, "r") as f:
                 contents = f.read().split('|')  # Split contents by pipe delimiter
-                if len(contents) == 10:  # Ensure all entries and texts are present
-                    # self.entry_type.delete(0, tk.END)
-                    # self.entry_type.insert(0, contents[0])
-                    self.select_test(contents[0])
+               
+                self.select_test(contents[0])
 
+                if hasattr(self, "entry_nature"):
                     self.entry_nature.delete(0, tk.END)
                     self.entry_nature.insert(0, contents[1])
+
+                if hasattr(self, "entry_desc"):
                     self.entry_desc.delete(0, tk.END)
                     self.entry_desc.insert(0, contents[2])
                     self.set_desc()
+
+                if hasattr(self, "entry_alpha"):
                     self.entry_alpha.delete(0, tk.END)
-                    if contents[3]=="":
-                        contents[3]="0.05"
+                    if contents[3] == "":
+                        contents[3] = "0.05"
                     self.entry_alpha.insert(0, contents[3])
                     self.set_alpha()
-                                   
+
+                if hasattr(self, "data_z"):
                     self.data_z.delete("1.0", tk.END)
                     self.data_z.insert("1.0", contents[4])
+
+                if hasattr(self, "form_z"):
                     self.form_z.delete("1.0", tk.END)
                     self.form_z.insert("1.0", contents[5])
+
+                if hasattr(self, "distro_z"):
                     self.distro_z.delete("1.0", tk.END)
                     self.distro_z.insert("1.0", contents[6])
+
+                if hasattr(self, "steps_z"):
                     self.steps_z.delete("1.0", tk.END)
                     self.steps_z.insert("1.0", contents[7])
+
+                if hasattr(self, "p_z"):
                     self.p_z.delete("1.0", tk.END)
                     self.p_z.insert("1.0", contents[8])
+
+                if hasattr(self, "con_z"):
                     self.con_z.delete("1.0", tk.END)
                     self.con_z.insert("1.0", contents[9])
-                    print("File opened successfully.")
-                else:
-                    print("Invalid file format.")
+                if hasattr(self, "entry_tmean"):
+                    self.entry_tmean.delete(0, tk.END)
+                    self.entry_tmean.insert(0, contents[10])
+                    self.set_tmean()
+
+                print("File opened successfully.")
+           
 
 
     def set_desc(self):
         self.desc=self.entry_desc.get()
+    
+    def set_tmean(self):
+
+        self.tmean=self.entry_tmean.get()
+    
     def set_alpha(self):
         self.alpha=self.entry_alpha.get()
     def validate_input(self, event):

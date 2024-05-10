@@ -14,6 +14,30 @@ def parse_input_string(input_string):
     return result
 
 
+def parse_input_stringr(input_string):
+    # Split the input string into rows
+    rows = input_string.split("\n")
+    # Initialize an empty list to store the result
+    result = []
+    # Iterate over each row
+    for row in rows:
+        # Split the row by commas
+        elements = row.split(",")
+        # Initialize an empty list to store arrays for this row
+        row_arrays = []
+        # Iterate over each element
+        for element in elements:
+            # Split the element by spaces
+            numbers = element.split()
+            # Convert the numbers from strings to floating-point numbers
+            numbers = [float(num) for num in numbers]
+            # Append the array to the row_arrays list
+            row_arrays.append(numbers)
+        # Append the row_arrays to the result list
+        result.append(row_arrays)
+    return result
+
+
 
 
 def max_digit_number(numbers):
@@ -38,3 +62,17 @@ def max_digit_number(numbers):
                 number_with_max_digit = number
     
     return number_with_max_digit
+
+
+def get_entry_values(entry_widgets):
+    entry_values = []
+    for entry in entry_widgets:
+        entry_values += [entry.get()]
+    return entry_values
+
+def get_entry_valuesd(entryWidgetsDict):
+    entryValues = list(entryWidgetsDict.values())
+    entryv = []
+    for entry in entryValues:
+        entryv +=[entry.get()]
+    return entryv
