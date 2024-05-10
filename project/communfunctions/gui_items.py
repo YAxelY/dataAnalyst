@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 from prettytable import PrettyTable
+from tkinter import messagebox
 
 import re
 
@@ -90,7 +91,7 @@ def validate_data_z(new_value):
         # Check if each part of the row contains valid floats
         for part in row.split():
             # Check if the part is a valid float
-            if not all(char.isdigit() or char == '.' for char in part):
+            if not all(char.isdigit() or char == '.' or char == ','  for char in part):
                 return False
     return True
 
@@ -139,5 +140,68 @@ def display_formatted_text(inputString, textWidget):
     textWidget.config(state="disabled")
 
 
+def replace_content(widget1, widget2):
+    # Supprimer tous les widgets enfants du premier widget
+    for child in widget1.winfo_children():
+        child.destroy()
+
+    # Oublier tous les widgets enfants du second widget
+    for child in widget2.winfo_children():
+        child.grid_forget()
+
+    # Ajouter le contenu du second widget au premier widget
+    for child in widget2.winfo_children():
+        child.grid(in_=widget1, sticky="nsew")  # Réattacher au nouveau parent
+
+    # Mettre à jour le premier widget pour afficher le nouveau contenu
+    widget1.update_idletasks()
+
+
+def destroy_children(widget):
+    for child in widget.winfo_children():
+        print(child)
+        child.destroy()
+    widget.update_idletasks()
+
+def showInfoMessage(title, message,root=None):
+    messagebox.showinfo(title, message,master=root)
+
+def showWarningMessage(title, message):
+    messagebox.showwarning(title, message)
+
+def showErrorMessage(title, message):
+    messagebox.showerror(title, message)
+
+def askQuestion(title, question):
+    result = messagebox.askquestion(title, question,master=None)
+    return result  # Returns 'yes' or 'no'
+
+def askOkCancel(title, question):
+    result = messagebox.askokcancel(title, question,master=None)
+    return result  # Returns True or False
+
+def askYesNo(title, question):
+    result = messagebox.askyesno(title, question,master=None)
+    return result  # Returns True or False
+
+def askRetryCancel(title, question):
+    result = messagebox.askretrycancel(title, question,master=None)
+    return result  # Returns True or False
+
+
+def create_entry_frame(self,parent_frame, labels, entry_names):
+    # Create inner frame
+    inner_frame = tk.Frame(parent_frame)
+
+    # Create and place labels and entries
+    entries = {}
+    for label_text, entry_name in zip(labels, entry_names):
+        label = tk.Label(inner_frame, text=label_text)
+        label.pack(expand="true",side="top",fill="x")
+        entry = tk.Entry(inner_frame, name=entry_name,validate="key", validatecommand=(self.validation, "%P"))
+        entry.pack(expand="true",side="top",fill="x")
+        entries[entry_name] = entry
+
+    return inner_frame, entries
 
 
