@@ -13,7 +13,7 @@ class ChiSquareHomogeneityTest:
         self.p_value = None
     
     #Controlle de donnees
-    def data_controller(self):
+    def datacontroller(self):
         if self.num_categories > 1 and self.num_groups > 1:
             self.calculate_expected()
             self.calcul_du_chi()

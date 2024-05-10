@@ -553,7 +553,7 @@ class DataAnalysisApp:
             self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
 
         #Ajout du test du chi-2 d'homogeneite
-        if self.selectedTest=="Chi2Homogeneity":
+        if self.selectedTest=="ChiSquareHomogeneityTest":
             self.ChiSquareHomogeneity=1
             self.currentTest == ChiSquareHomogeneityTest(self.data)
 
