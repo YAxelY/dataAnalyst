@@ -49,6 +49,7 @@ class DataAnalysisApp:
         self.selectedTest=" "
         self.selectedNature=" "
         self.validation = self.master.register(gui.validate_input)
+        self.currentTest=AnovaOneWay(self.data)
        
 
 
@@ -525,6 +526,7 @@ class DataAnalysisApp:
   
 
         if self.selectedTest=="AnovaTwoWayR":
+           
             self.anovaTwoWayR=1
             self.currentTest=AnovaTwoWayR(self.data)
             
@@ -562,7 +564,9 @@ class DataAnalysisApp:
     def runF(self):
         if self.dataInputMode=="tables":
             if self.anovaTwoWayR==1:
+                
                 self.currentTest.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
+                print(self.data)
             
             else:
                 self.currentTest.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))

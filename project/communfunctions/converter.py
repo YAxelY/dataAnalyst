@@ -14,24 +14,27 @@ def parse_input_string(input_string):
     return result
 
 
-def parse_input_stringr(inputString):
+def parse_input_stringr(input_string):
     # Split the input string into rows
-    rows = inputString.split("\n")
+    rows = input_string.split("\n")
     # Initialize an empty list to store the result
     result = []
     # Iterate over each row
     for row in rows:
-        # Check if the row contains commas
-        if "," in row:
-            # Split the row by commas to extract individual numbers
-            numbers = row.split(",")
-        else:
-            # Split the row by spaces to extract individual numbers
-            numbers = row.split()
-        # Convert the numbers from strings to floating-point numbers
-        numbers = [float(num) for num in numbers]
-        # Append the numbers to the result list
-        result.append(numbers)
+        # Split the row by commas
+        elements = row.split(",")
+        # Initialize an empty list to store arrays for this row
+        row_arrays = []
+        # Iterate over each element
+        for element in elements:
+            # Split the element by spaces
+            numbers = element.split()
+            # Convert the numbers from strings to floating-point numbers
+            numbers = [float(num) for num in numbers]
+            # Append the array to the row_arrays list
+            row_arrays.append(numbers)
+        # Append the row_arrays to the result list
+        result.append(row_arrays)
     return result
 
 
