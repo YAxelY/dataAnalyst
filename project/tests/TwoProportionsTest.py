@@ -2,12 +2,14 @@ import numpy as np
 from statsmodels.stats.proportion import proportions_ztest
 
 class TwoProportionsTest:
-    def __init__(self, dataset, proportion1, proportion2):
-        self.dataset = dataset
-        self.proportion1 = proportion1
-        self.proportion2 = proportion2
+    def __init__(self, dataset):
+        self.data = dataset
+       
         
     def datacontroller(self):
+        self.dataset=self.data
+        self.proportion1 = self.dataset[0]
+        self.proportion2 = self.dataset[1]
         if len(self.dataset) >= 2:
             return "Les données sont valides pour l'analyse."
         else:
@@ -52,7 +54,7 @@ if __name__ == "__main__":
     proportion2 = 0
 
     # Création d'une instance de TwoProportionsTest
-    test = TwoProportionsTest(dataset, proportion1, proportion2)
+    test = TwoProportionsTest(dataset)
 
     # Appel des méthodes pour tester la classe
     print("Contrôle des données:", test.datacontroller())
