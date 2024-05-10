@@ -562,10 +562,10 @@ class DataAnalysisApp:
     def runF(self):
         if self.dataInputMode=="tables":
             if self.anovaTwoWayR==1:
-                self.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
+                self.currentTest.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
             
             else:
-                self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+                self.currentTest.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
             
             self.currentTest.datacontroller()
             if self.Wilcoxon==1:
