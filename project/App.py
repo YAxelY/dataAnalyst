@@ -308,6 +308,7 @@ class DataAnalysisApp:
         st.setRelativeSize(self.master,self.data_z,self.master,0.02,0.01)
 
         self.data_fi,self.i_entries=gui.create_entry_frame(self,self.c_input,["entrer la taille de l 'echantillon:","entrer l'ecart-type de l'echantillon:","entrer la moyenne de l'echantillon:"],["taille","ecart","moy"])
+        self.data_fp,self.p_entries=gui.create_entry_frame(self,self.c_input,["proportion1:","proportion2: "],["pro1","pro2"])
       
      
 
@@ -439,6 +440,7 @@ class DataAnalysisApp:
             child.destroy()
         self.data_f.pack(expand="true",side="bottom",fill="both")
         self.data_fi.pack_forget()
+        self.data_fp.pack_forget()
         self.g_mode.pack_forget()
         self.g_mean.pack_forget( )
         
@@ -559,7 +561,7 @@ class DataAnalysisApp:
 
        
         if self.selectedTest=="TwoProportionsTest":
-            
+            self.data_fp.pack(expand="true",side="top",fill="both")
             self.TwoProportionsTest=1
             self.currentTest= TwoProportionsTest(self.data)
             self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
@@ -617,7 +619,14 @@ class DataAnalysisApp:
 
             if  self.TwoProportionsTest==1:
                 print("here")
-                self.currentTest.datacontroller(float(self.tmean))    
+                self.data1=ct.get_entry_valuesd(self.p_entries)
+                print(self.data1)
+                print(self.data)
+                self.currentTest.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+                print(self.currentTest.data)
+                self.currentTest.datacontroller(float(self.data1[0]),float(self.data1[1]))  
+               
+              
 
             
 
