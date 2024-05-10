@@ -91,7 +91,7 @@ def validate_data_z(new_value):
         # Check if each part of the row contains valid floats
         for part in row.split():
             # Check if the part is a valid float
-            if not all(char.isdigit() or char == '.' for char in part):
+            if not all(char.isdigit() or char == '.' or char == ','  for char in part):
                 return False
     return True
 

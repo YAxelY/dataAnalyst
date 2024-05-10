@@ -14,6 +14,27 @@ def parse_input_string(input_string):
     return result
 
 
+def parse_input_stringr(inputString):
+    # Split the input string into rows
+    rows = inputString.split("\n")
+    # Initialize an empty list to store the result
+    result = []
+    # Iterate over each row
+    for row in rows:
+        # Check if the row contains commas
+        if "," in row:
+            # Split the row by commas to extract individual numbers
+            numbers = row.split(",")
+        else:
+            # Split the row by spaces to extract individual numbers
+            numbers = row.split()
+        # Convert the numbers from strings to floating-point numbers
+        numbers = [float(num) for num in numbers]
+        # Append the numbers to the result list
+        result.append(numbers)
+    return result
+
+
 
 
 def max_digit_number(numbers):

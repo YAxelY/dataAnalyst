@@ -6,6 +6,7 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.AnovaTwoWayR import AnovaTwoWayR
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
 from tests.BathlettTTEst import BartlettTest
@@ -172,10 +173,12 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
+        self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
+        
         
         
         # Attach the menu to the menubutton
@@ -411,10 +414,12 @@ class DataAnalysisApp:
         
         for child in self.g_commun.winfo_children():
             child.destroy()
-
+        self.data_f.pack(expand="true",side="bottom",fill="both")
+        self.data_fi.pack_forget()
         self.g_mode.pack_forget()
         
         self.g_nature.pack_forget()
+
 
 
 
@@ -455,6 +460,7 @@ class DataAnalysisApp:
         self.BartlettTest=0
         self.OneSampleMeanTestG=0
         self.anovaTwoWay=0
+        self.anovaTwoWayR=0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
@@ -516,7 +522,15 @@ class DataAnalysisApp:
         if self.selectedTest=="AnovaTwoWay":
             self.anovaTwoWay=1
             self.currentTest=AnovaTwoWay(self.data)
+  
+
+        if self.selectedTest=="AnovaTwoWayR":
+            self.anovaTwoWayR=1
+            self.currentTest=AnovaTwoWayR(self.data)
+            
         self.previousTest=self.currentTest
+
+
            
             
            
@@ -547,13 +561,18 @@ class DataAnalysisApp:
 
     def runF(self):
         if self.dataInputMode=="tables":
-            self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
-            self.currentTest.data=self.data
+            if self.anovaTwoWayR==1:
+                self.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
+            
+            else:
+                self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+            
             self.currentTest.datacontroller()
             if self.Wilcoxon==1:
                 self.currentTest.datacontroller(self.selectedNature)
             if  self.OneSampleMeanTestG==1:
                 self.currentTest.datacontroller(float(self.tmean))
+            
 
             formhyp = self.currentTest.formHyp()
             
