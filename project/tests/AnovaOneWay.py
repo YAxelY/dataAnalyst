@@ -1,17 +1,17 @@
 from scipy.stats import f_oneway
 from scipy.stats import f
-<<<<<<< HEAD
+# <<<<<<< HEAD
 
-=======
+# =======
 from prettytable import PrettyTable
 from tkinter import messagebox
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 class AnovaOneWay:
     def __init__(self, data_set):
         self.data = data_set
         
     def datacontroller(self):
-<<<<<<< HEAD
+# <<<<<<< HEAD
         if len(self.data) > 1:
             self.p_value,_ = f_oneway(*self.data) 
             
@@ -51,7 +51,7 @@ class AnovaOneWay:
         else:
             return "Nous n'avons pas suffisamment de preuves pour rejeter l'hypothèse nulle (H0). Les moyennes des groupes sont statistiquement similaires."
     
-=======
+# =======
         self.data = [sublist for sublist in self.data if sublist]
        
         self.ti=self.compute_sum_of_ti( self.data)
@@ -137,7 +137,7 @@ class AnovaOneWay:
         else:
             return f"Nous acceptons l'hypothèse nulle (H0). Au risque de se tromper de {alpha}%, les moyennes des groupes sont statistiquement similaires."
 
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
     def dataEntry(self):
         # Implement data entry GUI components here
         pass
@@ -145,8 +145,8 @@ class AnovaOneWay:
     def my_function(self, my_arg1, my_arg2):
         # Implement your custom function logic here
         pass
-<<<<<<< HEAD
-=======
+# <<<<<<< HEAD
+# =======
 
 
 
@@ -272,4 +272,4 @@ class AnovaOneWay:
 # print(ano.testval())
 # print(ano.steps(0.05))
 # print(ano.conclusion())
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7

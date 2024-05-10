@@ -12,15 +12,15 @@ from tests.BathlettTTEst import BartlettTest
 from tests.Wilcoxon import Wilcoxon
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
-<<<<<<< HEAD
+# <<<<<<< HEAD
 from tests.AnovaOneWay import AnovaOneWay
 from tests.StudentTTest import StudentTTest
-from tests.Chi2 import Chi2
-=======
+
+# =======
 from tests.AnovaTwoWay import  AnovaTwoWay
 from tests.AnovaOneWay import AnovaOneWay
 from tests.StudentTest import StudentTest
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
 
 # template
@@ -33,25 +33,20 @@ from tests.StudentTest import StudentTest
 class DataAnalysisApp:
     def __init__(self,master):
 
-        
         # main windows
         self.master=master
         self.master.geometry("1200x700") 
         self.master.minsize(500, 500)  # Set minimum width and height
         self.master.config(bg="white", bd=2, relief="groove", width=1200, height=700)
         self.master.title("Data Analysis")
-       
         self.testTables=[]
         # end main windows
 
         # explicit attributes
-<<<<<<< HEAD
-        
-=======
+
         self.dataInputMode="tables"
         self.tmean=0
         self.already=1
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
         self.desc=""
         self.alpha=0.05
         self.data=[]
@@ -135,11 +130,11 @@ class DataAnalysisApp:
         #g_type style to be inserted
         self.g_type = tk.Frame(self.c_input)
         self.g_type.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
-        self.g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
-<<<<<<< HEAD
+#         self.g_type.config(bg="white",height=10,relief="solid",borderwidth=1)
+# <<<<<<< HEAD
 
-        #g_type style to be inserted
-=======
+#         #g_type style to be inserted
+# =======
        
     #g_type style to be inserted
         self.g_nature = tk.Frame(self.c_input)
@@ -166,7 +161,7 @@ class DataAnalysisApp:
         self.entry_nature.pack(expand="true",side="left",anchor="w",padx="10")
         self.entry_nature.config(state="disabled")
         st.setRelativeSizeEntry(self.entry_nature,self.c_input,self.master,0.02)
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
 
 
@@ -186,17 +181,17 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
-<<<<<<< HEAD
+# <<<<<<< HEAD
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTTest"))
         self.test_menu.add_command(label="Chi-2 ", command=lambda: self.select_test("Chi2"))
-=======
+# =======
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
         
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
         
         # Attach the menu to the menubutton
         self.label_type.config(menu=self.test_menu)
@@ -210,17 +205,17 @@ class DataAnalysisApp:
 
 
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
         self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
         self.label_detect.config(relief="ridge",bg="white",fg="black")
         self.label_detect.pack(side="left",padx=1)
 
-=======
-        # self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
-        # self.label_detect.config(relief="ridge",bg="white",fg="black")
-        # self.label_detect.pack(side="left",padx=1)
+# =======
+#         # self.label_detect = tk.Button(self.g_type, text="Help to Detect ")
+#         # self.label_detect.config(relief="ridge",bg="white",fg="black")
+#         # self.label_detect.pack(side="left",padx=1)
        
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
         
         self.g_commun = tk.Frame(self.c_input)
@@ -229,13 +224,13 @@ class DataAnalysisApp:
         
 
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
         # Ajouter un label "Seuil de Signification" et son champ après les onglets
         self.label_nature = tk.Menubutton(self.g_nature, text="Test Nature >")
         self.label_nature.config(relief="ridge",bg="white",fg="black")
         self.label_nature.pack(side="left",padx=1)
 
-=======
+# =======
 
 
 
@@ -250,7 +245,7 @@ class DataAnalysisApp:
         self.label_mode.config(relief="ridge",bg="white",fg="black")
         self.label_mode.pack(side="left",padx=1)
     
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
         # Create a menu for the menubutton
         self.mode_menu = tk.Menu(self.label_mode, tearoff=1)
@@ -516,12 +511,12 @@ class DataAnalysisApp:
             self.currentTest=Kruskal(self.data)
         if self.selectedTest=="AnovaOneWay":
             self.currentTest=AnovaOneWay(self.data)
-<<<<<<< HEAD
+# <<<<<<< HEAD
         if self.selectedTest=="StudentTTest":
             self.currentTest=StudentTTest(self.data)
         if self.selectedTest=="Chi2":
             self.currentTest=Chi2(self.data)
-=======
+# =======
         if self.selectedTest=="StudentTest":
            self.currentTest=StudentTest(self.data)  
         if self.selectedTest=="Wilcoxon":
@@ -566,7 +561,7 @@ class DataAnalysisApp:
         
     
 
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
     def select_nature(self,chosenNature):
         self.selectedNature=chosenNature
         gui.update_entry_text(self.entry_nature,self.selectedNature)
@@ -590,7 +585,7 @@ class DataAnalysisApp:
 
 
     def runF(self):
-<<<<<<< HEAD
+# <<<<<<< HEAD
 
         self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
         self.currentTest.data=self.data
@@ -610,7 +605,7 @@ class DataAnalysisApp:
         
 
 
-=======
+# =======
         if self.dataInputMode=="tables":
             self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
             self.currentTest.data=self.data
@@ -619,7 +614,7 @@ class DataAnalysisApp:
                 self.currentTest.datacontroller(self.selectedNature)
             if  self.OneSampleMeanTestG==1:
                 self.currentTest.datacontroller(float(self.tmean))
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
             formhyp = self.currentTest.formHyp()
             

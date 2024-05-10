@@ -1,6 +1,6 @@
 from scipy.stats import wilcoxon
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
 class WilcoxonTest:
     def __init__(self, dataSet, test_type="two-sided"):
         self.data1, self.data2 = dataSet  # Séparation du tuple en deux ensembles de données distincts
@@ -30,23 +30,21 @@ class Wilcoxon:
         """Formule les hypothèses nulle et alternative en fonction du type de test."""
         if self.test_type == "two-sided":
             return "H0 : Il n'y a pas de différence significative entre les deux échantillons.\n" \
-<<<<<<< HEAD
-                "H1 : Il y a une différence significative entre les deux échantillons."
+                    "H1 : Il y a une différence significative entre les deux échantillons."
         elif self.test_type == "greater":
             return "H0 : Le premier échantillon n'est pas significativement plus grand que le second.\n" \
                 "H1 : Le premier échantillon est significativement plus grand que le second."
         elif self.test_type == "less":
             return "H0 : Le premier échantillon n'est pas significativement moins grand que le second.\n" \
                 "H1 : Le premier échantillon est significativement moins grand que le second."
-=======
-                   "H1 : Il y a une différence significative entre les deux échantillons."
+                # "H1 : Il y a une différence significative entre les deux échantillons."
         elif self.test_type == "greater":
             return "H0 : Le premier échantillon n'est pas significativement plus grand que le second.\n" \
                    "H1 : Le premier échantillon est significativement plus grand que le second."
         elif self.test_type == "less":
             return "H0 : Le premier échantillon n'est pas significativement moins grand que le second.\n" \
                    "H1 : Le premier échantillon est significativement moins grand que le second."
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
     def distribution(self):
         """Décrit la distribution utilisée pour le test."""
@@ -67,26 +65,28 @@ class Wilcoxon:
             réponse += "Non-rejet de l'hypothèse nulle : Aucune différence significative."
         return réponse
 
-<<<<<<< HEAD
-    def conclusion(self, alpha=0.05):
-=======
+# # <<<<<<< HEAD
+#     def conclusion(self, alpha=0.05):
+#         pass
+
+#     def conclusion(self, alpha=0.05,desc=""):
+#         pass
     def conclusion(self, alpha=0.05,desc=""):
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
-        """Détermine si l'hypothèse nulle peut être rejetée en fonction du niveau alpha."""
+        # """Détermine si l'hypothèse nulle peut être rejetée en fonction du niveau alpha."""
         alpha = float(alpha)
         if self.p_value < alpha:
             return f"Comme la p-value ({self.p_value:.4f}) est inférieure à alpha ({alpha}), nous rejetons l'hypothèse nulle."
         else:
             return f"Comme la p-value ({self.p_value:.4f}) est supérieure à alpha ({alpha}), nous ne rejetons pas l'hypothèse nulle."
+        
 
-
-<<<<<<< HEAD
+# <<<<<<< HEAD
     # def N(self):
     #         N=0
     #         for i in self.dataSet:
     #             N+=len(i)
 # Exemple d'utilisation de la classe WilcoxonTest
-=======
+# =======
 if __name__=="__main__":
     # Exemple d'utilisation de la classe WilcoxonTest
     dataSet = ([9, 10, 11, 10, 14, 15, 18, 10, 14, 12], [8, 10, 12, 9, 17, 13, 15, 11, 14, 10])
@@ -100,4 +100,4 @@ if __name__=="__main__":
     print(test.testval())
     print(test.steps())
     print(test.conclusion())
->>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
+# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
