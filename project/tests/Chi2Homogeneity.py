@@ -85,9 +85,4 @@ class ChiSquareHomogeneityTest:
             return "L'hypothèse alternative (H1) est accepter. Il n'existe pas de différence significative entre les groupes."
 
 # Exemple d'utilisation
-observed_data = np.array([[10, 20, 30], [15, 25, 35], [20, 30, 40]])
-chi_square_test = ChiSquareHomogeneityTest(observed_data)
-print(chi_square_test.formHyp())
-print(chi_square_test.distribution())
-print(chi_square_test.steps(0.05))
-print(chi_square_test.conclusion())
+

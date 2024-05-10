@@ -6,7 +6,6 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
-from tests.Chi2Homogeneity import Chi2Homogeneity
 from tests.Chi2 import Chi2
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
@@ -21,6 +20,7 @@ from tests.StudentTTest import StudentTTest
 # =======
 from tests.AnovaTwoWay import  AnovaTwoWay
 from tests.AnovaOneWay import AnovaOneWay
+from tests.Chi2Homogeneity import ChiSquareHomogeneityTest
 from tests.StudentTest import StudentTest
 # >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
@@ -490,6 +490,7 @@ class DataAnalysisApp:
         self.BartlettTest=0
         self.OneSampleMeanTestG=0
         self.anovaTwoWay=0
+        self.ChiSquareHomogeneity = 0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
@@ -534,12 +535,7 @@ class DataAnalysisApp:
         if self.selectedTest=="OneSampleMeanTestG":
             
             self.OneSampleMeanTestG=1
-            self.currentTest=OneSampleMeanTestG(self.data)
-
-
-        #Ajout du chi deux d'homogeneite
-        if self.selectedTest=="Chi2Homogeneity":
-            self.currentTest == Chi2Homogeneity(self.data)
+            self.currentTest=OneSampleMeanTestG(self.data)        
             
             # Ajouter un label "Seuil de Signification" et son champ après les onglets
             self.label_tmean = tk.Button(self.g_commun, text="moyenne  thérique (by default u=0)")
@@ -556,7 +552,10 @@ class DataAnalysisApp:
             self.g_mode.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
             self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
 
-
+        #Ajout du test du chi-2 d'homogeneite
+        if self.selectedTest=="Chi2Homogeneity":
+            self.ChiSquareHomogeneity=1
+            self.currentTest == ChiSquareHomogeneityTest(self.data)
 
         if self.selectedTest=="AnovaTwoWay":
             self.anovaTwoWay=1

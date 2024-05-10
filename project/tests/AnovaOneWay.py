@@ -98,7 +98,7 @@ class AnovaOneWay:
         
         hypothesis_string += f"{symbol_alpha}_j est l'effet sur les colonnes\n"
         hypothesis_string += "H0: "
-        for i in range(1, self.c+1):
+        for i in range(1, self.fc+1):
             if i > 1:
                 hypothesis_string += " = "
             hypothesis_string += symbol_alpha + "_{}".format(i)
