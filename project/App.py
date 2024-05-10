@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
-from prettytable import PrettyTable
+from prettytable import PrettyTable  
 from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.ChiSquareHomogeneityTest import Appc
+from tests.StudentTTest import Appt
 from tests.ProportionToTheoreticalTest import ProportionToTheoreticalTest
 from tests.TwoProportionsTest import TwoProportionsTest
 from tests.CochranTest import CochranTest
@@ -13,7 +15,8 @@ from tests.AnovaTwoWayR import AnovaTwoWayR
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
 from tests.BathlettTTEst import BartlettTest
-from tests.Wilcoxon import Wilcoxon
+from tests.BathlettTTEst import Appb
+from tests.Wilcoxon import WilcoxonTest
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 from tests.AnovaTwoWay import  AnovaTwoWay
@@ -168,7 +171,7 @@ class DataAnalysisApp:
         self.label_type.config(relief="ridge",bg="white",fg="black")
         self.label_type.pack(side="left",padx=1)
        
-
+       
         # Create a menu for the menubutton
         self.test_menu = tk.Menu(self.label_type, tearoff=1)
         self.test_menu.config(relief="ridge",bg="white",fg="black")
@@ -178,13 +181,14 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
         self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
-        self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
+        self.test_menu.add_command(label="Student ", command=lambda: self.appeler_testt())
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
-        self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
+        self.test_menu.add_command(label="BartlettTest", command=lambda: self.appeler_testb())
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
         self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
         self.test_menu.add_command(label="ProportionToTheoric", command=lambda: self.select_test("ProportionToTheoreticalTest"))
         self.test_menu.add_command(label="test 2 proportions", command=lambda: self.select_test("TwoProportionsTest"))
+        self.test_menu.add_command(label="test d'homogeniete", command=lambda: self.appeler_testc())
         
         
         
@@ -768,6 +772,31 @@ class DataAnalysisApp:
             if not gui.validate_data_z(new_text):
                 # Prevent the insertion of invalid text
                 return "break"
+
+
+    def appeler_testb(self):
+        root = tk.Tk()
+        
+        root.minsize(1200,1000)
+        app =Appb(root)
+        
+        root.mainloop()
+
+    def appeler_testt(self):
+        root = tk.Tk()
+        
+       
+        app =Appt(root)
+        
+        root.mainloop()
+
+    def appeler_testc(self):
+        root = tk.Tk()
+        
+    
+        app =Appc(root)
+        
+        root.mainloop()
 
 
     
