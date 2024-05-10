@@ -6,7 +6,6 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
-from tests.Chi2 import Chi2
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
 from tests.BathlettTTEst import BartlettTest
@@ -55,7 +54,7 @@ class DataAnalysisApp:
         self.selectedTest=" "
         self.selectedNature=" "
         self.validation = self.master.register(gui.validate_input)
-
+       
 
 
         self.create_widgets(self.master)
@@ -188,11 +187,16 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Chi-2 ", command=lambda: self.select_test("Chi2"))
 # =======
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
+        self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
         self.test_menu.add_command(label="Student ", command=lambda: self.select_test("StudentTest"))
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         self.test_menu.add_command(label="Test d'homegeneité du chi deux", command=lambda: self.select_test("ChiSquareHomogeneityTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
+        self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
+        self.test_menu.add_command(label="ProportionToTheoric", command=lambda: self.select_test("ProportionToTheoreticalTest"))
+        self.test_menu.add_command(label="test 2 proportions", command=lambda: self.select_test("TwoProportionsTest"))
+        
         
 # >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
         
@@ -225,7 +229,23 @@ class DataAnalysisApp:
         self.g_commun.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
         self.g_commun.config(bg="white")
         
+        self.g_mean = tk.Frame(self.c_input)
+     
+        self.g_mean.config(bg="white")
 
+        self.label_tmean = tk.Button(self.g_mean, text="moyenne  thérique (by default u=0)")
+        self.label_tmean.config(relief="ridge",bg="white",fg="black")
+        self.label_tmean.pack(side="left",padx=1)
+    
+        
+        self.entry_tmean = tk.Entry(self.g_mean)
+        self.entry_tmean.pack(expand="true",side="left",anchor="w",padx="10")
+        self.entry_tmean.config(state="normal")
+        st.setRelativeSizeEntry(self.entry_tmean,self.c_input,self.master,0.12)
+        
+        self.entry_tmean.bind("<KeyRelease>", lambda event:  self.set_tmean())
+        self.g_mean.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
+        # self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
 
 # <<<<<<< HEAD
         # Ajouter un label "Seuil de Signification" et son champ après les onglets
@@ -446,10 +466,13 @@ class DataAnalysisApp:
         
         for child in self.g_commun.winfo_children():
             child.destroy()
-
+        self.data_f.pack(expand="true",side="bottom",fill="both")
+        self.data_fi.pack_forget()
         self.g_mode.pack_forget()
+        self.g_mean.pack_forget( )
         
         self.g_nature.pack_forget()
+
 
 
 
@@ -490,11 +513,11 @@ class DataAnalysisApp:
         self.BartlettTest=0
         self.OneSampleMeanTestG=0
         self.anovaTwoWay=0
-        self.ChiSquareHomogeneity = 0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
             self.currentTest=MannWhitney(self.data)
+            self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
             
    
 
@@ -537,30 +560,45 @@ class DataAnalysisApp:
             self.OneSampleMeanTestG=1
             self.currentTest=OneSampleMeanTestG(self.data)        
             
-            # Ajouter un label "Seuil de Signification" et son champ après les onglets
-            self.label_tmean = tk.Button(self.g_commun, text="moyenne  thérique (by default u=0)")
-            self.label_tmean.config(relief="ridge",bg="white",fg="black")
-            self.label_tmean.pack(side="left",padx=1)
-        
-            
-            self.entry_tmean = tk.Entry(self.g_commun)
-            self.entry_tmean.pack(expand="true",side="left",anchor="w",padx="10")
-            self.entry_tmean.config(state="normal")
-            st.setRelativeSizeEntry(self.entry_tmean,self.c_input,self.master,0.12)
-            
-            self.entry_tmean.bind("<KeyRelease>", lambda event:  self.set_tmean())
+            self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+
+             
             self.g_mode.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
             self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
 
-        #Ajout du test du chi-2 d'homogeneite
-        if self.selectedTest=="ChiSquareHomogeneityTest":
-            self.ChiSquareHomogeneity=1
-            self.currentTest == ChiSquareHomogeneityTest(self.data)
+
 
         if self.selectedTest=="AnovaTwoWay":
             self.anovaTwoWay=1
             self.currentTest=AnovaTwoWay(self.data)
+  
+
+        if self.selectedTest=="AnovaTwoWayR":
+           
+            self.anovaTwoWayR=1
+            self.currentTest=AnovaTwoWayR(self.data)
+        if self.selectedTest=="CochranTest":
+            
+            self.CochranTest=1
+            self.currentTest= CochranTest(self.data)
+
+        if self.selectedTest=="ProportionToTheoreticalTest":
+            
+            self.ProportionToTheoreticalTest=1
+            self.currentTest= ProportionToTheoreticalTest(self.data)
+            self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+
+       
+        if self.selectedTest=="TwoProportionsTest":
+            
+            self.TwoProportionsTest=1
+            self.currentTest= TwoProportionsTest(self.data)
+            self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
+
+        
         self.previousTest=self.currentTest
+
+
            
             
            
@@ -613,14 +651,19 @@ class DataAnalysisApp:
 
 # =======
         if self.dataInputMode=="tables":
-            self.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
-            self.currentTest.data=self.data
+            if self.anovaTwoWayR==1:
+                
+                self.currentTest.data=ct.parse_input_stringr(self.data_z.get("1.0", "end-1c"))
+                print(self.data)
+            
+            else:
+                self.currentTest.data=ct.parse_input_string(self.data_z.get("1.0", "end-1c"))
+            
             self.currentTest.datacontroller()
             if self.Wilcoxon==1:
                 self.currentTest.datacontroller(self.selectedNature)
             if  self.OneSampleMeanTestG==1:
                 self.currentTest.datacontroller(float(self.tmean))
-# >>>>>>> 228a0535364e44925f000f0c17fab78e22bc51d7
 
             formhyp = self.currentTest.formHyp()
             
