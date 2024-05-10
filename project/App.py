@@ -6,6 +6,7 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.CochranTest import CochranTest
 from tests.AnovaTwoWayR import AnovaTwoWayR
 from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import OneSampleMeanTestG
@@ -179,6 +180,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.select_test("BartlettTest"))
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
+        self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
         
         
         
@@ -462,6 +464,7 @@ class DataAnalysisApp:
         self.OneSampleMeanTestG=0
         self.anovaTwoWay=0
         self.anovaTwoWayR=0
+        self.CochranTest=0
         gui.update_entry_text(self.entry_type,self.selectedTest)
 
         if self.selectedTest=="MannWhitney":
@@ -529,6 +532,11 @@ class DataAnalysisApp:
            
             self.anovaTwoWayR=1
             self.currentTest=AnovaTwoWayR(self.data)
+        if self.selectedTest=="CochranTest":
+            print("here")
+            self.CochranTest=1
+            self.currentTest= CochranTest(self.data)
+           
             
         self.previousTest=self.currentTest
 
