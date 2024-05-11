@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import filedialog
 import numpy as np
 from scipy.stats import bartlett, chi2
 
@@ -86,6 +87,14 @@ class Appb:
         self.result_label = ttk.Label(self.result_frame, text="")
         self.result_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
+        # Menu pour ouvrir et sauvegarder
+        menubar = tk.Menu(self.root)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Ouvrir", command=self.open_file)
+        filemenu.add_command(label="Sauvegarder", command=self.save_file)
+        menubar.add_cascade(label="Fichier", menu=filemenu)
+        self.root.config(menu=menubar)
+
     def run_test(self):
         # Récupérer les données à partir de l'entrée utilisateur
         data_str = self.data_entry.get()
@@ -105,6 +114,20 @@ class Appb:
         # Afficher la conclusion dans le widget des résultats
         self.result_label.config(text=conclusion)
 
+    def open_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+        if file_path:
+            with open(file_path, "r") as file:
+                data = file.read()
+                self.data_entry.delete(0, tk.END)
+                self.data_entry.insert(0, data)
+
+    def save_file(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        if file_path:
+            data = self.data_entry.get()
+            with open(file_path, "w") as file:
+                file.write(data)
 
 if __name__ == "__main__":
     root = tk.Tk()
