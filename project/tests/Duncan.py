@@ -8,7 +8,7 @@ class Duncan:
     def datacontroller(self):
         return "well"
     def formHyp(self):
-        return "Déterminer le ou lesquels des échantillons sont différentes"
+        return "Déterminer lequel ou lesquels des échantillons sont différents."
 
     def distribution(self):
        return "Test de Duncan"
