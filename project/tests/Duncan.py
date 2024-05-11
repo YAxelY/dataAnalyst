@@ -8,7 +8,7 @@ class Duncan:
     def datacontroller(self):
         return "well"
     def formHyp(self):
-        return "H0: Les moyennes des groupes sont égales\nH1: Au moins une des moyennes des groupes est différente"
+        return "Déterminer le ou lesquels des échantillons sont différentes"
 
     def distribution(self):
        return "Test de Duncan"
@@ -53,17 +53,17 @@ if __name__ == '__main__':
 
 
 
-    # Example usage with multiple data groups
-    data1 = [5, 4, 8, 6, 3]
-    data2 = [9, 7, 8, 6, 9]
-    data3 = [3, 5, 2, 3, 7]
-    data4 = [2, 3, 4, 1, 4]
-    data5 = [7, 6, 9, 4, 7]
+# Example usage with multiple data groups
+data1 = [5, 4, 8, 6, 3]
+data2 = [9, 7, 8, 6, 9]
+data3 = [3, 5, 2, 3, 7]
+data4 = [2, 3, 4, 1, 4]
+data5 = [7, 6, 9, 4, 7]
 
-    data=[data1,data2,data3,data4,data5]
-    duncan_test = Duncan(*data)
-    print(duncan_test.formHyp())  # Print the null and alternative hypotheses
-    duncan_steps = duncan_test.steps()  
-    print(duncan_steps)  # Print detailed steps
-    duncan_results = duncan_test.conclusion()  
-    print(duncan_results)  # Print detailed results
+data=[data1,data2,data3,data4,data5]
+duncan_test = Duncan(*data)
+print(duncan_test.formHyp())  # Print the null and alternative hypotheses
+duncan_steps = duncan_test.steps()  
+print(duncan_steps)  # Print detailed steps
+duncan_results = duncan_test.conclusion()  
+print(duncan_results)  # Print detailed results
