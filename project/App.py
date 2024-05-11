@@ -6,6 +6,7 @@ from tkinter import messagebox
 import Style as st 
 from communfunctions import gui_items as gui
 from communfunctions import converter as ct
+from tests.Duncan import Duncan
 from tests.ChiSquareHomogeneityTest import Appc
 from tests.StudentTTest import Appt
 from tests.ProportionToTheoreticalTest import ProportionToTheoreticalTest
@@ -13,7 +14,7 @@ from tests.TwoProportionsTest import TwoProportionsTest
 from tests.CochranTest import CochranTest
 from tests.AnovaTwoWayR import AnovaTwoWayR
 from tests.moyenneinfo import OneSampleMeanTestGinfo
-from tests.Moyenne2 import OneSampleMeanTestG
+from tests.Moyenne2 import Moyenne
 from tests.BathlettTTEst import BartlettTest
 from tests.BathlettTTEst import Appb
 from tests.Wilcoxon import WilcoxonTest
@@ -181,10 +182,11 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
         self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
+        self.test_menu.add_command(label="duncan ", command=lambda: self.select_test("Duncan"))
         self.test_menu.add_command(label="Student ", command=lambda: self.appeler_testt())
         self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.appeler_testb())
-        self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.select_test("OneSampleMeanTestG"))
+        self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.appeler_testm())
         self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
         self.test_menu.add_command(label="ProportionToTheoric", command=lambda: self.select_test("ProportionToTheoreticalTest"))
         self.test_menu.add_command(label="test 2 proportions", command=lambda: self.select_test("TwoProportionsTest"))
@@ -568,6 +570,10 @@ class DataAnalysisApp:
             self.data_fp.pack(expand="true",side="top",fill="both")
             self.TwoProportionsTest=1
             self.currentTest= TwoProportionsTest(self.data)
+        if self.selectedTest=="Duncan":
+            
+          
+            self.currentTest= Duncan(self.data)
             
         
         self.previousTest=self.currentTest
@@ -797,6 +803,13 @@ class DataAnalysisApp:
         
     
         app =Appc(root)
+        
+        root.mainloop()
+    def appeler_testm(self):
+        root = tk.Tk()
+        
+    
+        app =Moyenne(root)
         
         root.mainloop()
 
