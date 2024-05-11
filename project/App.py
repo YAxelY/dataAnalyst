@@ -17,7 +17,7 @@ from tests.moyenneinfo import OneSampleMeanTestGinfo
 from tests.Moyenne2 import Moyenne
 from tests.BathlettTTEst import BartlettTest
 from tests.BathlettTTEst import Appb
-from tests.Wilcoxon import WilcoxonTest
+from tests.Wilcoxon import WilcoxonApp
 from tests.MannWhitney import MannWhitney
 from tests.kruskal import Kruskal
 from tests.AnovaTwoWay import  AnovaTwoWay
@@ -184,7 +184,7 @@ class DataAnalysisApp:
         self.test_menu.add_command(label="Anova two way with replication", command=lambda: self.select_test("AnovaTwoWayR"))
         self.test_menu.add_command(label="duncan ", command=lambda: self.select_test("Duncan"))
         self.test_menu.add_command(label="Student ", command=lambda: self.appeler_testt())
-        self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.select_test("Wilcoxon"))
+        self.test_menu.add_command(label="Wilcoxon ", command=lambda: self.appeler_testw())
         self.test_menu.add_command(label="BartlettTest", command=lambda: self.appeler_testb())
         self.test_menu.add_command(label="Test de moyenne pour un échantillon", command=lambda: self.appeler_testm())
         self.test_menu.add_command(label="Test de cochran", command=lambda: self.select_test("CochranTest"))
@@ -693,8 +693,9 @@ class DataAnalysisApp:
                 self.select_test(contents[0])
 
                 if hasattr(self, "entry_nature"):
-                    self.entry_nature.delete(0, tk.END)
-                    self.entry_nature.insert(0, contents[1])
+                    if contents[1]=="":
+                        self.entry_nature.delete(0, tk.END)
+                        self.entry_nature.insert(0, contents[1])
 
                 if hasattr(self, "entry_desc"):
                     if contents[2] != "":
@@ -812,6 +813,14 @@ class DataAnalysisApp:
         app =Moyenne(root)
         
         root.mainloop()
+    def appeler_testw(self):
+        root = tk.Tk()
+        
+
+        app = WilcoxonApp(root)
+        
+        root.mainloop()
+
 
 
     
