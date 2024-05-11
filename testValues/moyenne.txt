@@ -1,0 +1,5 @@
+Sample Size (n): 40
+Theoretical Mean (μ0): 7.95
+Sample Standard Deviation (σ): 2.5
+Sample Mean (X̄): 8.75
+Significance Level (α): 0.01
