@@ -176,7 +176,7 @@ class DataAnalysisApp:
         self.test_menu = tk.Menu(self.label_type, tearoff=1)
         self.test_menu.config(relief="ridge",bg="white",fg="black")
         self.test_menu.add_command(label="MannWhitney", command=lambda: self.select_test("MannWhitney"))
-        self.test_menu.add_command(label="t-test", command=lambda: self.select_test("t-test"))
+        
         self.test_menu.add_command(label="Kruskal", command=lambda: self.select_test("Kruskal"))
         self.test_menu.add_command(label="Anova One way ", command=lambda: self.select_test("AnovaOneWay"))
         self.test_menu.add_command(label="Anova two way ", command=lambda: self.select_test("AnovaTwoWay"))
@@ -229,7 +229,7 @@ class DataAnalysisApp:
         st.setRelativeSizeEntry(self.entry_tmean,self.c_input,self.master,0.12)
         
         self.entry_tmean.bind("<KeyRelease>", lambda event:  self.set_tmean())
-        self.g_mean.pack( expand="true",side="top", fill="x",anchor="nw", pady=0,padx=0,ipadx=0,ipady=0)
+       
         # self.g_nature.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
 
 
@@ -523,7 +523,7 @@ class DataAnalysisApp:
            self.currentTest=StudentTest(self.data)  
         if self.selectedTest=="Wilcoxon":
             self.Wilcoxon=1
-            self.currentTest=Wilcoxon(self.data)  
+            self.currentTest=WilcoxonTest(self.data)  
         if self.selectedTest=="BathlettTTEst":
 
            
@@ -568,8 +568,7 @@ class DataAnalysisApp:
             self.data_fp.pack(expand="true",side="top",fill="both")
             self.TwoProportionsTest=1
             self.currentTest= TwoProportionsTest(self.data)
-            self.g_mean.pack( expand="true",side="top",anchor="ne", fill="x" ,padx=0,pady=10,ipadx=0,ipady=0)
-
+            
         
         self.previousTest=self.currentTest
 
@@ -679,7 +678,6 @@ class DataAnalysisApp:
                 f.write("|".join(entries_and_texts))  # Join all entries with pipe delimiter
             print("File saved successfully.")
 
-
     def open_file(self):
         filename = filedialog.askopenfilename(filetypes=(("Text files", "*.tst"), ("All files", "*.*")))
         if filename:
@@ -693,16 +691,18 @@ class DataAnalysisApp:
                     self.entry_nature.insert(0, contents[1])
 
                 if hasattr(self, "entry_desc"):
-                    self.entry_desc.delete(0, tk.END)
-                    self.entry_desc.insert(0, contents[2])
-                    self.set_desc()
+                    if contents[2] != "":
+                       
+                        self.entry_desc.delete(0, tk.END)
+                        self.entry_desc.insert(0, contents[2])
+                        self.set_desc()
 
                 if hasattr(self, "entry_alpha"):
-                    self.entry_alpha.delete(0, tk.END)
-                    if contents[3] == "":
-                        contents[3] = "0.05"
-                    self.entry_alpha.insert(0, contents[3])
-                    self.set_alpha()
+                   
+                    if contents[3] != "":
+                        self.entry_alpha.delete(0, tk.END)
+                        self.entry_alpha.insert(0, contents[3])
+                        self.set_alpha()
 
                 if hasattr(self, "data_z"):
                     self.data_z.delete("1.0", tk.END)
@@ -728,9 +728,11 @@ class DataAnalysisApp:
                     self.con_z.delete("1.0", tk.END)
                     self.con_z.insert("1.0", contents[9])
                 if hasattr(self, "entry_tmean"):
-                    self.entry_tmean.delete(0, tk.END)
-                    self.entry_tmean.insert(0, contents[10])
-                    self.set_tmean()
+                    if contents[10] != "":
+                      
+                        self.entry_tmean.delete(0, tk.END)
+                        self.entry_tmean.insert(0, contents[10])
+                        self.set_tmean()
 
                 print("File opened successfully.")
            
